@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>mi mapa. — Descubre el perfil alimentario de tu hijo</title>
+<meta name="description" content="En 2 minutos: el perfil sensorial de tu hijo, lo que falta en su plato y los primeros alimentos que podría aceptar.">
+<meta name="theme-color" content="#FFF6EA">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   mi mapa. — Quiz v2 (México · estilo Lotería)
+   Configuración rápida → bloque CONFIG en el <script>
+   ========================================================= */
+:root{
+  --bg:#FFF6EA; --surface:#FFFFFF; --ink:#2A1A16; --muted:#6B5A53;
+  --rosa:#D6246E; --rosa-soft:#FCE3EE;
+  --azul:#1F3F8F; --azul-soft:#E2E9F8;
+  --naranja:#EE7B22; --naranja-soft:#FDE8D6;
+  --amarillo:#F5BE2E; --amarillo-soft:#FDF2D2;
+  --verde:#2E8B5A; --verde-soft:#DDF1E5;
+  --line:#EADCC8; --radius:20px;
+  --shadow:0 12px 30px -14px rgba(42,26,22,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:Nunito,system-ui,sans-serif;font-size:17px;line-height:1.5;min-height:100dvh;-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 1px 1px, rgba(42,26,22,.05) 1px, transparent 0);background-size:22px 22px}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;line-height:1.12;letter-spacing:-.01em}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.wrap{max-width:560px;margin:0 auto;padding:14px 16px 44px}
+.slab{font-family:"Alfa Slab One",Georgia,serif;font-weight:400;letter-spacing:.02em}
+
+/* franja superior tipo talavera */
+.stripe{height:6px;background:repeating-linear-gradient(90deg,var(--rosa) 0 28px,var(--naranja) 28px 56px,var(--amarillo) 56px 84px,var(--azul) 84px 112px,var(--verde) 112px 140px)}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px)}
+.top-in{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 16px}
+.logo{font-family:Fraunces,serif;font-weight:800;font-size:21px;color:var(--azul)}
+.logo b{color:var(--rosa)}
+.back{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--muted);visibility:hidden}
+.back.show{visibility:visible}
+.back:hover{background:var(--azul-soft)}
+.bar{flex:1;height:9px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--azul),var(--rosa),var(--naranja));border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.top.hidebar .bar,.top.hidebar .back{opacity:0}
+
+/* screens */
+.screen{animation:in .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.eyebrow{font-size:13px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:var(--rosa);margin-bottom:10px}
+.q{font-size:clamp(25px,6.4vw,31px);margin-bottom:10px}
+.sub{color:var(--muted);margin-bottom:22px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:15px 16px;font-weight:800;transition:transform .12s,border-color .15s,background .15s}
+.opt:hover{border-color:var(--azul)}
+.opt:active{transform:scale(.985)}
+.opt .em{font-size:26px;width:34px;text-align:center;flex:none}
+.opt small{display:block;font-weight:600;color:var(--muted);font-size:14px}
+.opt.sel{border-color:var(--azul);background:var(--azul-soft)}
+.opt .ck{margin-left:auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;transition:.15s}
+.opt.sel .ck{background:var(--azul);border-color:var(--azul)}
+.opt.sel .ck::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+
+/* ===== Cartas de Lotería ===== */
+.deck{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (min-width:480px){.deck{grid-template-columns:repeat(4,1fr)}}
+.lcard{position:relative;background:#fff;border:2.5px solid var(--ink);border-radius:10px;padding:4px;box-shadow:3px 3px 0 var(--ink);transition:transform .15s, box-shadow .15s;text-align:center}
+.lcard .in{border:1.5px solid var(--ink);border-radius:6px;padding:16px 2px 5px;position:relative;min-height:112px;display:flex;flex-direction:column;justify-content:space-between}
+.lcard .num{position:absolute;top:3px;left:5px;font-family:"Alfa Slab One",serif;font-size:12px;line-height:1}
+.lcard .em{font-size:38px;line-height:1.1;transition:transform .2s}
+.lcard .nm{font-family:"Alfa Slab One",serif;font-size:11.5px;line-height:1.15;text-transform:uppercase;letter-spacing:.02em;padding:0 2px}
+.lcard.c0 .in{background:var(--rosa-soft)} .lcard.c1 .in{background:var(--amarillo-soft)} .lcard.c2 .in{background:var(--azul-soft)}
+.lcard.c3 .in{background:var(--naranja-soft)} .lcard.c4 .in{background:var(--verde-soft)}
+.lcard.sel{transform:translateY(-4px) rotate(-1.5deg);box-shadow:4px 6px 0 var(--rosa);border-color:var(--rosa)}
+.lcard.sel .em{transform:scale(1.12)}
+.lcard.sel::after{content:"✓";position:absolute;top:-9px;right:-9px;width:26px;height:26px;border-radius:50%;background:var(--rosa);color:#fff;font-weight:900;font-size:15px;display:grid;place-items:center;border:2px solid #fff}
+.counter{text-align:center;color:var(--muted);font-weight:800;margin:18px 0 4px}
+.counter b{color:var(--rosa)}
+
+/* hero */
+.fan{display:flex;justify-content:center;align-items:flex-end;gap:0;margin:8px 0 6px;height:150px}
+.fan .lcard{width:96px;margin:0 -3px}
+.fan .lcard .in{min-height:118px}
+.fan .lcard:nth-child(1){transform:rotate(-10deg) translateY(10px)}
+.fan .lcard:nth-child(2){transform:rotate(0deg);z-index:2}
+.fan .lcard:nth-child(3){transform:rotate(10deg) translateY(10px)}
+.hero-art{background:var(--surface);border-radius:26px;padding:18px 14px 20px;box-shadow:var(--shadow);margin:6px 0 22px;border:2px solid var(--line)}
+.arrow-row{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:900;color:var(--muted);font-size:14px;margin-top:12px}
+.pill{background:var(--azul-soft);color:var(--azul);padding:6px 12px;border-radius:99px;font-weight:900;font-size:13.5px}
+.pill.o{background:var(--rosa-soft);color:var(--rosa)}
+.minis{display:flex;justify-content:center;gap:8px;margin-top:12px}
+.minis .lcard{width:66px;box-shadow:2px 2px 0 var(--ink)}
+.minis .lcard .in{min-height:76px;padding-top:12px}
+.minis .lcard .em{font-size:24px}
+.minis .lcard .nm{font-size:8.5px}
+.minis .lcard .num{font-size:9px}
+.hero h1{font-size:clamp(30px,8vw,40px);margin-bottom:12px}
+.hero h1 em{font-style:normal;color:var(--rosa)}
+.bullets{list-style:none;display:grid;gap:10px;margin:16px 0 4px}
+.bullets li{display:flex;gap:10px;font-weight:700}
+.bullets li::before{content:"";flex:none;width:22px;height:22px;border-radius:50%;background:var(--rosa-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23D6246E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat;margin-top:2px}
+
+/* CTA */
+.input{width:100%;font:inherit;font-size:20px;font-weight:800;padding:16px 18px;border:2px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);outline:none}
+.input:focus{border-color:var(--azul)}
+.gender{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--azul);color:#fff;font-weight:900;font-size:18px;padding:18px 20px;border-radius:16px;margin-top:22px;box-shadow:0 5px 0 #142a61;transition:transform .1s,box-shadow .1s,opacity .2s}
+.cta:active{transform:translateY(3px);box-shadow:0 2px 0 #142a61}
+.cta[disabled]{opacity:.4;pointer-events:none}
+.cta.rosa{background:var(--rosa);box-shadow:0 5px 0 #9c1450}
+.cta.rosa:active{box-shadow:0 2px 0 #9c1450}
+.cta.pulse{animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{filter:none}50%{filter:brightness(1.08)}}
+.sticky-cta{position:sticky;bottom:12px;z-index:4}
+.fine{font-size:13px;color:var(--muted);text-align:center;margin-top:12px}
+
+/* insight / recompensa */
+.insight{background:var(--surface);border-radius:var(--radius);padding:24px 22px;box-shadow:var(--shadow);border:2px solid var(--line);position:relative;overflow:hidden}
+.insight::before{content:"";position:absolute;inset:0 0 auto 0;height:7px;background:repeating-linear-gradient(90deg,var(--rosa) 0 24px,var(--naranja) 24px 48px,var(--amarillo) 48px 72px,var(--azul) 72px 96px)}
+.insight .big{font-size:50px;margin-bottom:8px}
+.insight h2{font-size:26px;margin-bottom:10px}
+.insight p{color:var(--muted);margin-bottom:10px}
+.insight p strong{color:var(--ink)}
+.insight.alert{background:linear-gradient(180deg,#fff,var(--naranja-soft))}
+.badge-new{display:inline-flex;align-items:center;gap:6px;background:var(--amarillo);color:#4d3600;font-weight:900;font-size:13px;padding:5px 11px;border-radius:99px;margin:6px 0 12px;animation:pop .5s .15s both}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.nutrows{display:grid;gap:8px;margin:14px 0 12px}
+.nutrows div{display:flex;gap:10px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;font-size:15px}
+.nutrows div span{font-size:22px}
+
+/* loading */
+.loading{text-align:center;padding-top:16px}
+.ring{width:120px;height:120px;margin:10px auto 22px;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring .pct{position:absolute;inset:0;display:grid;place-items:center;font-family:"Alfa Slab One",serif;font-size:28px;color:var(--azul)}
+.steps{text-align:left;display:grid;gap:12px;margin-top:20px;background:var(--surface);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.steps div{display:flex;gap:10px;align-items:center;color:var(--muted);font-weight:800;transition:color .3s}
+.steps div i{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;transition:.3s}
+.steps div.done{color:var(--ink)}
+.steps div.done i{background:var(--verde) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/13px no-repeat;border-color:var(--verde)}
+
+/* resultado */
+.r-head{text-align:center;margin:8px 0 20px}
+.r-head h1{font-size:clamp(28px,7.5vw,36px)}
+.card{background:var(--surface);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px;border:2px solid var(--line)}
+.card h3{font-size:21px;margin-bottom:6px}
+.card .lead{color:var(--muted);font-size:15px;margin-bottom:14px}
+.profile{background:var(--azul);color:#fff;text-align:center;padding:26px 20px;border:0;position:relative;overflow:hidden}
+.profile::after{content:"";position:absolute;inset:auto 0 0 0;height:7px;background:repeating-linear-gradient(90deg,var(--rosa) 0 24px,var(--naranja) 24px 48px,var(--amarillo) 48px 72px,var(--verde) 72px 96px)}
+.profile .tag{display:inline-block;background:rgba(255,255,255,.16);padding:5px 12px;border-radius:99px;font-weight:900;font-size:12.5px;letter-spacing:.07em;text-transform:uppercase}
+.profile h2{font-family:"Alfa Slab One",serif;font-weight:400;font-size:30px;margin:12px 0 6px;letter-spacing:.01em}
+.profile p{opacity:.92}
+.traits{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}
+.traits span{background:#fff;color:var(--azul);font-weight:900;font-size:14px;padding:6px 12px;border-radius:99px}
+.mapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
+.mapgrid div{border-radius:14px;padding:12px 6px}
+.mapgrid b{display:block;font-family:"Alfa Slab One",serif;font-weight:400;font-size:28px}
+.mapgrid small{font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+.m1{background:var(--verde-soft);color:var(--verde)}.m2{background:var(--rosa-soft);color:var(--rosa)}.m3{background:#F1E9DD;color:var(--muted)}
+.mydeck{display:flex;gap:8px;overflow-x:auto;padding:10px 4px 8px;margin-top:6px;scrollbar-width:none}
+.mydeck .lcard{flex:none;width:72px;box-shadow:2px 2px 0 var(--ink)}
+.mydeck .lcard .in{min-height:84px;padding-top:13px}
+.mydeck .lcard .em{font-size:26px}
+.mydeck .lcard .nm{font-size:8.5px}
+.mydeck .lcard .num{font-size:9px}
+.watch{display:grid;gap:10px}
+.watch div{display:flex;gap:12px;align-items:flex-start;background:var(--rosa-soft);border-radius:14px;padding:12px 14px}
+.watch .em{font-size:24px;flex:none}
+.watch b{display:block}
+.watch small{color:#7d2147;font-size:14px;font-weight:700}
+.watch .ok{background:var(--verde-soft)}.watch .ok small{color:var(--verde)}
+.urg{margin-top:14px;padding:12px 14px;border-left:4px solid var(--naranja);background:var(--naranja-soft);border-radius:0 12px 12px 0;font-weight:700;font-size:15px}
+.disc{font-size:13px;color:var(--muted);margin-top:10px}
+.bridge{display:flex;gap:14px;border:2px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;align-items:flex-start}
+.bridge .lcard{flex:none;width:78px}
+.bridge .lcard .in{min-height:96px}
+.bridge .lcard .em{font-size:30px}
+.bridge .lcard .nm{font-size:9px}
+.bridge .body{flex:1;min-width:0}
+.bridge .from{font-size:12.5px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.bridge .to{font-size:18px;font-weight:900;margin:3px 0 4px;line-height:1.25}
+.bridge .why{font-size:15px;color:var(--muted)}
+.bridge .nut{display:inline-block;margin:8px 4px 0 0;background:var(--verde-soft);color:var(--verde);font-weight:900;font-size:12.5px;padding:4px 10px;border-radius:99px}
+.bridge.open{border-color:var(--rosa);background:linear-gradient(180deg,#fff,var(--rosa-soft));flex-wrap:wrap}
+.recipe{flex-basis:100%;background:#fff;border-radius:12px;padding:12px 14px;font-size:15px;border:1.5px dashed var(--rosa)}
+.recipe ol{padding-left:20px;display:grid;gap:4px;margin-top:4px}
+.locked .blur{filter:blur(6px);user-select:none;pointer-events:none}
+.lock{position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,246,234,.35)}
+.lock span{background:var(--ink);color:#fff;font-weight:900;font-size:14px;padding:8px 14px;border-radius:99px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.week div{background:var(--bg);border-radius:12px;padding:8px 2px;font-size:12px;font-weight:900;color:var(--muted)}
+.week div span{display:block;font-size:22px;margin-top:4px}
+.week .now{background:var(--rosa-soft);color:var(--rosa)}
+.journey{position:relative;padding-left:26px;display:grid;gap:14px}
+.journey::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:3px;border-radius:3px;background:linear-gradient(var(--azul),var(--rosa),var(--naranja))}
+.journey div{position:relative}
+.journey div::before{content:"";position:absolute;left:-23px;top:5px;width:13px;height:13px;border-radius:50%;background:#fff;border:3px solid var(--rosa)}
+.journey b{display:block}
+.journey small{color:var(--muted);font-size:15px}
+.offer{border:3px solid var(--rosa);position:relative;padding-top:30px}
+.offer .ribbon{position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:var(--rosa);color:#fff;font-weight:900;font-size:13px;padding:6px 14px;border-radius:99px;white-space:nowrap}
+.price{text-align:center;margin:6px 0 14px}
+.price .old{color:var(--muted);text-decoration:line-through;font-weight:800}
+.price .now{font-family:"Alfa Slab One",serif;font-size:44px;color:var(--ink);line-height:1}
+.price .now small{font-family:Nunito;font-size:18px;color:var(--muted);font-weight:800}
+.price .per{color:var(--muted);font-weight:800;font-size:14px;margin-top:6px}
+.feat{list-style:none;display:grid;gap:10px}
+.feat li{display:flex;gap:10px;font-weight:700}
+.feat li span{flex:none;font-size:20px}
+.guar{display:flex;gap:12px;align-items:center;background:var(--verde-soft);border-radius:14px;padding:14px;margin-top:16px}
+.guar .em{font-size:34px}
+.guar b{display:block;color:var(--verde)}
+.guar small{color:var(--muted);font-size:14px;font-weight:700}
+details{background:var(--surface);border-radius:14px;padding:14px 16px;margin-bottom:8px;border:2px solid var(--line)}
+summary{font-weight:900;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
+summary::after{content:"+";color:var(--rosa);font-size:22px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{color:var(--muted);margin-top:8px;font-size:15px}
+.foot{font-size:12.5px;color:var(--muted);text-align:center;margin-top:26px;line-height:1.5}
+.letter{font-size:16px}
+.letter p{margin-bottom:10px}
+.letter .sig{font-family:Fraunces,serif;font-weight:800;color:var(--azul)}
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+<header class="top" id="top">
+  <div class="top-in">
+    <button class="back" id="back" aria-label="Volver">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="logo">mi mapa<b>.</b></div>
+    <div class="bar"><i id="bar"></i></div>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<script>
+/* =========================================================
+   CONFIG — cambia aquí antes de publicar
+   ========================================================= */
+const CONFIG = {
+  checkoutUrl: "https://pay.hotmart.com/SEU-LINK-AQUI", // link do checkout
+  price: 119,            // preço mensal em MXN
+  oldPrice: null,        // preço "de" riscado — só use se for um preço que você realmente cobra/cobrou
+  currency: "MX$",
+  guaranteeDays: 7,
+  metaPixelId: "",       // Pixel da Meta, ex: "123456789012345" — vazio = desligado
+  gaMeasurementId: "",   // Google Analytics 4, ex: "G-ABC123XYZ" — vazio = desligado
+  passUtms: true         // repassa utm_* da URL para o checkout
+};
+
+/* ---------- Google Analytics 4 (opcional) ---------- */
+if (CONFIG.gaMeasurementId) {
+  const s=document.createElement("script"); s.async=true; s.src="https://www.googletagmanager.com/gtag/js?id="+CONFIG.gaMeasurementId; document.head.appendChild(s);
+  window.dataLayer=window.dataLayer||[]; window.gtag=function(){dataLayer.push(arguments)};
+  gtag("js",new Date()); gtag("config",CONFIG.gaMeasurementId);
+}
+const ga=(ev,data)=>{ try{ if(window.gtag) gtag("event",ev,data||{}); }catch(e){} };
+
+/* ---------- Meta Pixel (opcional) ---------- */
+if (CONFIG.metaPixelId) {
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', CONFIG.metaPixelId); fbq('track', 'PageView');
+}
+const GA_MAP = {Lead:"generate_lead", InitiateCheckout:"begin_checkout", ViewContent:"view_item"};
+const track = (ev, data) => { try { if (window.fbq) fbq('track', ev, data || {}); } catch(e){} ga(GA_MAP[ev]||ev, data); };
+const trackCustom = (ev, data) => { try { if (window.fbq) fbq('trackCustom', ev, data || {}); } catch(e){} ga(ev.replace(/([a-z])([A-Z])/g,"$1_$2").toLowerCase(), data); };
+/* Nome de cada tela, para ver no funil onde as mães param */
+const STEP_NAMES = ["00_inicio","01_nombre","02_edad","03_cantidad","04_insight_culpa","05_baraja","06_textura","07_insight_pista","08_colores","09_mezclado","10_reaccion","11_frutas_verduras","12_insight_urgencia","13_como_te_sientes","14_insight_validacion","15_preocupacion","16_cargando","17_resultado"];
+
+/* ---------- Cartas de Lotería: alimentos de casa ---------- */
+const FOODS = [
+  {id:"arroz",     a:"El",  n:"Arroz blanco",   e:"🍚", tx:"suave",     c:"blanco"},
+  {id:"arrozrojo", a:"El",  n:"Arroz rojo",     e:"🍛", tx:"suave",     c:"naranja"},
+  {id:"sopa",      a:"La",  n:"Sopa de fideo",  e:"🍜", tx:"cremoso",   c:"naranja"},
+  {id:"papas",     a:"Las", n:"Papas fritas",   e:"🍟", tx:"crujiente", c:"dorado"},
+  {id:"pollo",     a:"El",  n:"Pollo",          e:"🍗", tx:"seco",      c:"dorado", g:["prot"]},
+  {id:"nuggets",   a:"Los", n:"Nuggets",        e:"🍤", tx:"crujiente", c:"dorado", g:["prot"]},
+  {id:"quesadilla",a:"La",  n:"Quesadilla",     e:"🧀", tx:"suave",     c:"amarillo", g:["calcio"]},
+  {id:"tortilla",  a:"La",  n:"Tortilla",       e:"🫓", tx:"suave",     c:"blanco"},
+  {id:"molletes",  a:"Los", n:"Molletes",       e:"🥖", tx:"crujiente", c:"dorado", g:["calcio","hierro","fibra"]},
+  {id:"pasta",     a:"La",  n:"Pasta sola",     e:"🍝", tx:"suave",     c:"blanco"},
+  {id:"hotcakes",  a:"Los", n:"Hot cakes",      e:"🥞", tx:"suave",     c:"dorado"},
+  {id:"pan",       a:"El",  n:"Pan / bolillo",  e:"🍞", tx:"suave",     c:"dorado"},
+  {id:"galletas",  a:"Las", n:"Galletas",       e:"🍪", tx:"crujiente", c:"dorado"},
+  {id:"totopos",   a:"Los", n:"Totopos",        e:"🌽", tx:"crujiente", c:"dorado"},
+  {id:"salchicha", a:"La",  n:"Salchicha",      e:"🌭", tx:"suave",     c:"rojo",   g:["prot"]},
+  {id:"gelatina",  a:"La",  n:"Gelatina",       e:"🍮", tx:"cremoso",   c:"rojo"},
+  {id:"leche",     a:"La",  n:"Leche",          e:"🥛", tx:"cremoso",   c:"blanco", g:["calcio"]},
+  {id:"yogur",     a:"El",  n:"Yogur",          e:"🍶", tx:"cremoso",   c:"blanco", g:["calcio"]},
+  {id:"huevo",     a:"El",  n:"Huevo",          e:"🥚", tx:"suave",     c:"amarillo", g:["hierro","prot"]},
+  {id:"frijoles",  a:"Los", n:"Frijolitos",     e:"🫘", tx:"cremoso",   c:"cafe",   g:["hierro","fibra"]},
+  {id:"carne",     a:"La",  n:"Carne",          e:"🥩", tx:"seco",      c:"cafe",   g:["hierro","prot"]},
+  {id:"platano",   a:"El",  n:"Plátano",        e:"🍌", tx:"cremoso",   c:"amarillo", g:["fibra","fruta"]},
+  {id:"manzana",   a:"La",  n:"Manzana",        e:"🍎", tx:"crujiente", c:"rojo",   g:["fibra","fruta"]},
+  {id:"mango",     a:"El",  n:"Mango",          e:"🥭", tx:"cremoso",   c:"naranja",g:["vitA","fruta"]},
+  {id:"zanahoria", a:"La",  n:"Zanahoria",      e:"🥕", tx:"crujiente", c:"naranja",g:["vitA","verdura","fibra"]},
+  {id:"pepino",    a:"El",  n:"Pepino",         e:"🥒", tx:"crujiente", c:"verde",  g:["verdura"]},
+  {id:"brocoli",   a:"El",  n:"Brócoli",        e:"🥦", tx:"suave",     c:"verde",  g:["verdura","vitA","fibra"]},
+];
+FOODS.forEach((f,i)=>f.num=i+1);
+const F = Object.fromEntries(FOODS.map(f=>[f.id,f]));
+
+const card = (o, i, extra="") => `<div class="lcard c${i%5} ${extra}"><div class="in"><span class="num">${o.num ?? i+1}</span><div class="em">${o.e}</div><div class="nm">${o.a?o.a+" ":""}${o.n}</div></div></div>`;
+
+/* Alimentos "puente": de lo que ya acepta → siguiente paso */
+const BRIDGES = [
+  {id:"camote", from:["papas","totopos"], e:"🍠", a:"El", n:"Camote crujiente",
+   to:"Bastones de camote al horno",
+   why:"Mismo corte y el mismo crujiente que sus papitas. Solo cambia un poquito el color.",
+   nut:["vitA","fibra"], recipe:["Corta el camote en bastones del mismo tamaño que sus papas favoritas.","Úntalos con poquito aceite y sal, igualito que sus papas.","Hornea a 200 °C por 25 min, volteando a la mitad, hasta que queden bien crujientes.","Sírvelos junto a 2 o 3 papas de siempre. Sin presión: que primero los vea y los toque."]},
+  {id:"zanahoria-horno", from:["papas","totopos","nuggets"], e:"🥕", a:"La", n:"Zanahoria dorada",
+   to:"Bastones de zanahoria crujiente",
+   why:"Forma de papa frita, textura crujiente y color naranja: un puente suave hacia las verduras.",
+   nut:["vitA","verdura"], recipe:["Corta la zanahoria en bastones delgaditos.","Mezcla con aceite, sal y una pizca de paprika.","Hornea a 210 °C por 20–25 min hasta que doren.","Preséntalos en el mismo plato o recipiente que usa para sus papas."]},
+  {id:"sopa-zanahoria", from:["sopa"], e:"🍜", a:"La", n:"Sopita naranja",
+   to:"Sopa de fideo con zanahoria licuada en el caldo",
+   why:"Su sopita de siempre. La zanahoria va licuada en el caldo de jitomate: mismo color, misma textura.",
+   nut:["vitA","verdura"], recipe:["Cuece media zanahoria y licúala con el jitomate del caldo.","Prepara la sopa de fideo como siempre, con ese caldo.","Empieza con poquita zanahoria y sube la cantidad cada semana."]},
+  {id:"arrozrojo-zanahoria", from:["arrozrojo","arroz"], e:"🍛", a:"El", n:"Arroz rojo de casa",
+   to:"Arroz rojo con zanahoria rallada finita",
+   why:"Mismo color, misma textura. La zanahoria rallada muy fina se pierde dentro del arroz.",
+   nut:["vitA","verdura"], recipe:["Ralla zanahoria lo más fino posible.","Agrégala al sofrito del arroz, junto con el jitomate.","Cocina el arroz como siempre. Empieza con una cucharada."]},
+  {id:"arroz-huevo", from:["arroz"], e:"🍳", a:"El", n:"Arroz con huevito",
+   to:"Arroz con huevo bien picadito",
+   why:"Sigue siendo su arroz blanco. El huevo, muy finito, casi no cambia la textura.",
+   nut:["hierro","prot"], recipe:["Bate 1 huevo y cocínalo revolviendo hasta que quede en trocitos muy pequeños.","Mezcla una cucharadita con su porción de arroz de siempre.","Si lo acepta, aumenta la cantidad poco a poco durante la semana."]},
+  {id:"quesadilla-frijol", from:["quesadilla","tortilla"], e:"🫓", a:"La", n:"Quesadilla secreta",
+   to:"Quesadilla con frijolitos untados finitos",
+   why:"Su quesadilla de siempre, con una capa muy delgada de frijol que casi no se ve.",
+   nut:["hierro","fibra"], recipe:["Unta una capa muy fina de frijoles refritos (sin trocitos) en la tortilla.","Agrega su queso de siempre y dora como acostumbras.","Corta en la misma forma que le gusta (triángulos, tiras…)."]},
+  {id:"molletes-frijol", from:["pan","molletes"], e:"🥖", a:"Los", n:"Molletes dorados",
+   to:"Molletes con frijolitos y queso gratinado",
+   why:"Pan crujiente por fuera y queso derretido encima. Los frijolitos van untados bien delgados.",
+   nut:["hierro","calcio","fibra"], recipe:["Parte un bolillo y unta una capa delgada de frijoles refritos.","Cubre con su queso favorito.","Gratina en horno o freidora de aire hasta que dore."]},
+  {id:"nuggets-avena", from:["nuggets","pollo"], e:"🍗", a:"Los", n:"Nuggets de casa",
+   to:"Nuggets caseros con avena",
+   why:"Mismo dorado y crujiente que sus nuggets, hechos en casa para sumar fibra.",
+   nut:["fibra","prot"], recipe:["Pica pechuga de pollo muy finita y forma nuggets del tamaño de siempre.","Pásalos por huevo y luego por avena molida con pan molido.","Hornea a 200 °C por 18 min, o en freidora de aire."]},
+  {id:"hotcake-platano", from:["hotcakes","platano","galletas","pan"], e:"🥞", a:"Los", n:"Hot cakes de plátano",
+   to:"Mini hot cakes de plátano",
+   why:"Dulces, suaves y dorados, como los de siempre. Un formato que muchos niños selectivos aceptan rápido.",
+   nut:["fibra","fruta","prot"], recipe:["Machaca 1 plátano maduro con 1 huevo.","Agrega 2 cucharadas de avena molida.","Cocina cucharadas pequeñas en sartén a fuego bajo, 1–2 min por lado."]},
+  {id:"pan-frances", from:["pan","galletas"], e:"🍞", a:"El", n:"Pan francés",
+   to:"Pan francés dorado en tiritas",
+   why:"Su pan de siempre, dorado y suave por dentro. El huevo se integra sin verse.",
+   nut:["hierro","prot","calcio"], recipe:["Bate 1 huevo con un chorrito de leche.","Remoja rebanadas de pan unos segundos.","Dora en sartén con poquita mantequilla.","Corta en tiras, como le gusta comer el pan."]},
+  {id:"yogur-mango", from:["yogur","leche","gelatina"], e:"🥭", a:"El", n:"Yogur de mango",
+   to:"Yogur con un toque de mango",
+   why:"Su yogur de siempre, cremoso y de color clarito. Solo un poquito de sabor nuevo.",
+   nut:["vitA","calcio","fruta"], recipe:["Licúa un trocito de mango hasta que quede totalmente liso.","Mezcla 1 cucharadita en su yogur.","Si lo acepta, sube la cantidad poco a poco."]},
+  {id:"licuado", from:["leche","platano"], e:"🥤", a:"El", n:"Licuado",
+   to:"Licuado de plátano",
+   why:"Líquido, dulce y en vaso: cero texturas sorpresa.",
+   nut:["calcio","fibra","fruta"], recipe:["Licúa 1 vaso de leche con 1/2 plátano maduro.","Sírvelo en su vaso favorito, frío o como lo prefiera."]},
+  {id:"pasta-calabaza", from:["pasta","quesadilla"], e:"🍝", a:"La", n:"Pasta con quesito",
+   to:"Pasta con salsa de queso y calabaza",
+   why:"Salsa cremosa de queso con calabaza escondida, de color muy parecido.",
+   nut:["vitA","calcio","verdura"], recipe:["Cuece calabaza de Castilla o calabacita y licúala muy lisa.","Mézclala con su salsa de queso o queso derretido.","Agrega poquita a su pasta de siempre."]},
+  {id:"papas-horno", from:["papas","arroz","pasta","pan","tortilla","sopa","arrozrojo"], e:"🥔", a:"La", n:"Papa al horno",
+   to:"Papas al horno en gajos",
+   why:"El mismo ingrediente que ya le encanta, en otra forma. Es el paso más pequeñito posible.",
+   nut:["fibra"], recipe:["Corta papas en gajos, con piel.","Aceite, sal y horno a 210 °C por 30 min.","Sírvelas junto a sus papas fritas de siempre."]},
+];
+
+const WATCH = {
+  hierro:  {e:"🩸", n:"Hierro",     why:"Clave para la energía, la concentración y el desarrollo."},
+  calcio:  {e:"🦴", n:"Calcio",     why:"Huesos y dientes en plena etapa de crecimiento."},
+  vitA:    {e:"👁️", n:"Vitamina A", why:"Importante para la vista, la piel y las defensas."},
+  fibra:   {e:"🌾", n:"Fibra",      why:"Ayuda a la digestión. El estreñimiento es muy común cuando la alimentación es muy restringida."},
+  verdura: {e:"🥦", n:"Verduras",   why:"Vitaminas y minerales que casi no se encuentran en otros alimentos."},
+};
+
+/* ---------- Estado ---------- */
+const S = { name:"", sex:"m", age:"", count:"", foods:[], texture:"", colors:[], mixed:"", reaction:"", veg:"", feel:[], worry:"" };
+let step = 0, history = [];
+
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const N  = () => esc(S.name || (S.sex==="f" ? "tu hija" : "tu hijo"));
+const g  = (m,f) => S.sex==="f" ? f : m;
+const el = () => g("él","ella");
+
+/* ---------- Pantallas ---------- */
+const SCREENS = [
+  /* 0 — HERO */
+  { noBar:true, render: () => `
+    <section class="screen hero">
+      <div class="eyebrow">Quiz gratuito · 2 minutos</div>
+      <h1>¿En tu casa la comida es <em>siempre lo mismo</em>?</h1>
+      <p class="sub">Arroz, papas, pollo… y si le cambias algo, se acaba la comida. Descubre por qué pasa, qué le puede estar faltando en el plato y por dónde empezar.</p>
+      <div class="hero-art">
+        <div class="fan">${card(F.arroz,1)}${card(F.papas,0)}${card(F.pollo,2)}</div>
+        <div class="arrow-row"><span class="pill">Lo que ya come</span> → <span class="pill o">Lo que podría aceptar</span></div>
+        <div class="minis">${[BRIDGES[0],BRIDGES[1],BRIDGES[2],BRIDGES[8]].map((b,i)=>card({...b,num:28+i},i+3)).join("")}</div>
+      </div>
+      <ul class="bullets">
+        <li>El perfil sensorial de tu peque (texturas, colores, formas)</li>
+        <li>Los nutrientes que podrían estar faltando en su plato</li>
+        <li>3 alimentos “puente” pensados a partir de lo que ya le gusta</li>
+      </ul>
+      <button class="cta rosa pulse" data-next>Descubrir su perfil →</button>
+      <p class="fine">Sin registro. Sin obligarlo a comer nada.</p>
+    </section>` },
+
+  /* 1 — NOMBRE + SEXO */
+  { render: () => `
+    <section class="screen">
+      <div class="eyebrow">Empecemos</div>
+      <h2 class="q">¿Cómo se llama tu peque?</h2>
+      <p class="sub">Así armamos su mapa, solo para ${S.sex==="f"?"ella":"él"}.</p>
+      <input class="input" id="name" maxlength="20" placeholder="Su nombre" value="${esc(S.name)}" autocomplete="off">
+      <div class="gender">
+        <button class="opt ${S.sex==="m"?"sel":""}" data-sex="m"><span class="em">👦</span>Niño</button>
+        <button class="opt ${S.sex==="f"?"sel":""}" data-sex="f"><span class="em">👧</span>Niña</button>
+      </div>
+      <button class="cta" id="go" ${S.name.trim()?"":"disabled"}>Continuar</button>
+    </section>`,
+    mount: () => {
+      const i = $("#name"), b = $("#go");
+      i.focus();
+      i.oninput = () => { S.name = i.value.replace(/\s+/g," ").trimStart(); b.disabled = !S.name.trim(); };
+      i.onkeydown = e => { if (e.key==="Enter" && S.name.trim()) { S.name=S.name.trim(); next(); } };
+      document.querySelectorAll("[data-sex]").forEach(x => x.onclick = () => { S.sex = x.dataset.sex; document.querySelectorAll("[data-sex]").forEach(y=>y.classList.toggle("sel", y===x)); });
+      b.onclick = () => { S.name = S.name.trim(); next(); };
+    } },
+
+  /* 2 — EDAD */
+  single("age", () => `¿Qué edad tiene ${N()}?`, () => "Cada etapa tiene necesidades distintas de crecimiento.", [
+    ["2-3","2 a 3 años","🧸"],["4-6","4 a 6 años","🎒"],["7-10","7 a 10 años","📚"],["11+","11 años o más","🎧"]]),
+
+  /* 3 — CANTIDAD */
+  single("count", () => `En una semana normal, ¿cuántos alimentos distintos acepta ${N()}?`, () => "Sin contar dulces ni bebidas. Un cálculo aproximado está perfecto.", [
+    ["<5","Menos de 5","😟"],["5-10","Entre 5 y 10","😕"],["10-20","Entre 10 y 20","🙂"],["20+","Más de 20","😊"]]),
+
+  /* 4 — INSIGHT 1: alivio de culpa */
+  { render: () => {
+      const few = S.count==="<5" || S.count==="5-10";
+      return `
+    <section class="screen">
+      <div class="insight">
+        <div class="big">${few?"🫂":"🌱"}</div>
+        <h2>${few ? `No es capricho. Y no es tu culpa.` : `Muy buena base para empezar.`}</h2>
+        ${few ? `
+        <p>Muchos niños en el espectro comen menos de 10 alimentos. Detrás de esto casi nunca hay “mala conducta”: hay un <strong>sistema sensorial que vive las texturas, los colores y los olores con mucha más intensidad</strong>.</p>
+        <p>La buena noticia: si el problema es sensorial, la solución también puede serlo. Y se empieza desde lo que ${N()} <strong>ya acepta</strong>.</p>` : `
+        <p>Que ${N()} acepte varios alimentos es una gran ventaja: cada uno es un <strong>punto de partida</strong> para explorar opciones parecidas en textura, color y forma.</p>
+        <p>Vamos a ver cuáles son sus cartas.</p>`}
+      </div>
+      <button class="cta" data-next>Armar su baraja →</button>
+    </section>`; } },
+
+  /* 5 — ALIMENTOS: baraja de Lotería */
+  { render: () => `
+    <section class="screen">
+      <div class="eyebrow">La baraja de ${N()}</div>
+      <h2 class="q">Toca las cartas de lo que ${N()} come sin problema</h2>
+      <p class="sub">Estas son sus “cartas seguras”. De aquí salen todas sus recomendaciones.</p>
+      <div class="deck">${FOODS.map((f,i)=>`<button data-food="${f.id}" style="padding:0">${card(f,i,S.foods.includes(f.id)?"sel":"")}</button>`).join("")}</div>
+      <p class="counter" id="cnt"></p>
+      <div class="sticky-cta"><button class="cta" id="go">Continuar</button></div>
+    </section>`,
+    mount: () => {
+      const upd = () => { const n=S.foods.length; $("#cnt").innerHTML = n ? `<b>${n}</b> carta${n>1?"s":""} en la baraja de ${N()}` : "Elige al menos 1 carta"; $("#go").disabled = !n; };
+      document.querySelectorAll("[data-food]").forEach(x => x.onclick = () => {
+        const id=x.dataset.food; const i=S.foods.indexOf(id);
+        i>-1 ? S.foods.splice(i,1) : S.foods.push(id);
+        x.firstElementChild.classList.toggle("sel"); upd();
+        if (navigator.vibrate) navigator.vibrate(8);
+      });
+      $("#go").onclick = next; upd();
+    } },
+
+  /* 6 — TEXTURA */
+  single("texture", () => `¿Qué textura prefiere ${N()}?`, () => "La textura suele ser la pista más importante.", [
+    ["crujiente","Crujiente","🥨","Papitas, galletas, totopos"],
+    ["suave","Suave y parejita","🍚","Arroz, pasta, pan"],
+    ["cremoso","Cremosa o caldosa","🍜","Sopita, yogur, frijolitos"],
+    ["seco","Seca y firme","🍗","Pollo, carne, tortilla"]]),
+
+  /* 7 — INSIGHT 2: pista desbloqueada */
+  { render: () => {
+      const t = {crujiente:"lo crujiente",suave:"lo suave y parejito",cremoso:"lo cremoso",seco:"lo seco y firme"}[S.texture];
+      return `
+    <section class="screen">
+      <div class="insight">
+        <span class="badge-new">🔓 Pista desbloqueada</span>
+        <h2>${N()} busca ${t}. Eso es una pista, no un problema.</h2>
+        <p>Los niños con alimentación selectiva suelen rechazar <strong>la sensación</strong>, no el alimento. Si ${el()} se siente segur${g("o","a")} con ${t}, hay decenas de alimentos nutritivos que se pueden preparar <strong>con esa misma textura</strong>.</p>
+        <p>Por eso obligar casi nunca funciona… y adaptar, sí.</p>
+      </div>
+      <button class="cta" data-next>Seguir armando su perfil →</button>
+    </section>`; } },
+
+  /* 8 — COLORES (multi) */
+  multi("colors", () => `¿Qué colores de comida acepta ${N()}?`, () => "Elige todos los que apliquen.", [
+    ["blanco","Blancos y beige","🤍","Arroz, pasta, tortilla"],["dorado","Dorados","🟫","Papas, nuggets, molletes"],
+    ["naranja","Naranjas y amarillos","🧡","Arroz rojo, mango, huevo"],["rojo","Rojos","❤️","Jitomate, manzana, gelatina"],
+    ["verde","Verdes","💚","Brócoli, pepino, aguacate"]]),
+
+  /* 9 — MEZCLADO */
+  single("mixed", () => `¿Cómo le gusta el plato a ${N()}?`, () => "", [
+    ["separado","Todo separado, que no se toque nada","🍱"],["mezcla-poco","Acepta un poco mezclado","🍛"],["mezcla","Acepta comida mezclada sin problema","🥘"]]),
+
+  /* 10 — REACCIÓN */
+  single("reaction", () => `Cuando le ofreces algo nuevo, ¿qué suele hacer ${N()}?`, () => "", [
+    ["mira","Lo mira o lo huele, pero no lo prueba","👀"],["aleja","Lo aleja o se levanta de la mesa","🙅"],
+    ["llanto","Llora o hace berrinche","😭"],["nausea","Le dan náuseas o arcadas","🤢"],["prueba","A veces lo prueba","🤏"]]),
+
+  /* 11 — FRUTA / VERDURA */
+  single("veg", () => `¿Cuántas veces por semana come ${N()} fruta o verdura?`, () => "Aquí nadie te juzga. 💛", [
+    ["0","Casi nunca","🚫"],["1-2","1 o 2 veces","🍌"],["3-5","3 a 5 veces","🍎"],["diario","Todos los días","🥗"]]),
+
+  /* 12 — INSIGHT 3: URGENCIA (lo que no se ve) */
+  { render: () => {
+      const low = S.veg==="0" || S.veg==="1-2" || S.count==="<5" || S.count==="5-10";
+      return `
+    <section class="screen">
+      <div class="insight ${low?"alert":""}">
+        <div class="eyebrow" style="margin-top:6px">${low?"Lo que casi nadie te explica":"Un dato importante"}</div>
+        <h2>${low?"Lo que no se ve en el plato, se ve en el cuerpo.":"Variedad hoy, tranquilidad mañana."}</h2>
+        ${low ? `
+        <p>Cuando un niño come casi siempre lo mismo durante meses, es común que empiecen a faltarle nutrientes que pesan justo <strong>en la etapa en que más está creciendo</strong>:</p>
+        <div class="nutrows">
+          <div><span>🩸</span>Hierro — energía, atención y desarrollo</div>
+          <div><span>🦴</span>Calcio — huesos y dientes</div>
+          <div><span>👁️</span>Vitamina A — vista, piel y defensas</div>
+        </div>
+        <p>No pasa de un día para otro. Por eso casi nadie lo nota a tiempo… <strong>y por eso “ya comerá” no es un plan.</strong></p>
+        <p>Vamos a ver qué hay, y qué falta, en el plato de ${N()}.</p>` : `
+        <p>Aunque ${N()} ya come algo de fruta o verdura, entre más variado sea su plato, <strong>más fácil es cubrir hierro, calcio y vitaminas</strong> mientras crece.</p>
+        <p>Vamos a ver qué hay, y qué falta, en su plato.</p>`}
+      </div>
+      <button class="cta" data-next>Seguir →</button>
+    </section>`; } },
+
+  /* 13 — CÓMO TE SIENTES (multi) */
+  multi("feel", () => `Y tú, ¿cómo te sientes a la hora de la comida?`, () => "Elige todo lo que sientas. Esta parte también importa.", [
+    ["cansada","Agotada, es una batalla diaria","😮‍💨"],["culpa","Culpable, siento que algo hago mal","😔"],
+    ["miedo","Preocupada por su salud","💭"],["juzgada","Juzgada por la familia, la escuela o el pediatra","👀"],
+    ["sola","Sola, nadie entiende lo que vivo","🫥"]]),
+
+  /* 14 — INSIGHT 4: validación */
+  { render: () => `
+    <section class="screen">
+      <div class="insight">
+        <div class="big">💛</div>
+        <h2>Lo que sientes tiene todo el sentido.</h2>
+        <p>Cocinar dos o tres veces, ver el plato regresar igualito, escuchar “ya comerá” de la suegra, de la maestra, hasta del pediatra… mientras por dentro te preguntas si está creciendo bien. <strong>Eso cansa a cualquiera.</strong></p>
+        <p>Nada de esto significa que lo estés haciendo mal. Significa que te faltaba <strong>un mapa</strong>. Y ya casi ves el de ${N()}.</p>
+      </div>
+      <button class="cta" data-next>Continuar →</button>
+    </section>` },
+
+  /* 15 — PREOCUPACIÓN */
+  single("worry", () => `¿Qué es lo que más te preocupa hoy?`, () => "", [
+    ["nutrientes","Que le falten nutrientes","🩺"],["crecimiento","Su crecimiento y desarrollo","📏"],
+    ["futuro","Que esto siga igual cuando sea más grande","⏳"],["familia","Poder comer en familia sin pelear","👨‍👩‍👧"]]),
+
+  /* 16 — LOADING */
+  { noBar:true, noBack:true, render: () => `
+    <section class="screen loading">
+      <div class="eyebrow">Casi listo</div>
+      <h2 class="q">Armando el mapa alimentario de ${N()}…</h2>
+      <div class="ring">
+        <svg width="120" height="120"><circle cx="60" cy="60" r="52" stroke="var(--line)" stroke-width="10" fill="none"/><circle id="arc" cx="60" cy="60" r="52" stroke="var(--rosa)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327"/></svg>
+        <div class="pct" id="pct">0%</div>
+      </div>
+      <div class="steps" id="steps">
+        <div><i></i>Leyendo sus ${S.foods.length} cartas seguras</div>
+        <div><i></i>Identificando su perfil sensorial</div>
+        <div><i></i>Revisando los nutrientes de su plato</div>
+        <div><i></i>Buscando alimentos puente compatibles</div>
+      </div>
+    </section>`,
+    mount: () => {
+      trackCustom("QuizCompleted", {count:S.count, foods:S.foods.length});
+      track("Lead");
+      let p=0; const arc=$("#arc"), pct=$("#pct"), rows=[...document.querySelectorAll("#steps div")];
+      const t=setInterval(()=>{ p+=2; arc.style.strokeDashoffset = 327-327*p/100; pct.textContent=p+"%";
+        rows.forEach((r,i)=>{ if(p>=(i+1)*24) r.classList.add("done"); });
+        if(p>=100){ clearInterval(t); setTimeout(next,450); } }, 70);
+    } },
+
+  /* 17 — RESULTADO */
+  { noBar:true, noBack:true, render: renderResult, mount: () => {
+      track("ViewContent",{content_name:"resultado_quiz"});
+      document.querySelectorAll("[data-buy]").forEach(b => b.onclick = buy);
+    } },
+];
+
+/* ---------- Constructores de preguntas ---------- */
+function single(key, title, sub, options){
+  return { render: () => `
+    <section class="screen">
+      <h2 class="q">${title()}</h2>${sub()?`<p class="sub">${sub()}</p>`:`<div style="height:12px"></div>`}
+      <div class="opts">${options.map(([v,l,e,d])=>`<button class="opt ${S[key]===v?"sel":""}" data-v="${v}"><span class="em">${e}</span><span>${l}${d?`<small>${d}</small>`:""}</span></button>`).join("")}</div>
+    </section>`,
+    mount: () => document.querySelectorAll("[data-v]").forEach(x => x.onclick = () => {
+      S[key]=x.dataset.v; document.querySelectorAll("[data-v]").forEach(y=>y.classList.toggle("sel",y===x));
+      if (navigator.vibrate) navigator.vibrate(8);
+      setTimeout(next, 260);
+    }) };
+}
+function multi(key, title, sub, options){
+  return { render: () => `
+    <section class="screen">
+      <h2 class="q">${title()}</h2>${sub()?`<p class="sub">${sub()}</p>`:""}
+      <div class="opts">${options.map(([v,l,e,d])=>`<button class="opt ${S[key].includes(v)?"sel":""}" data-v="${v}"><span class="em">${e}</span><span>${l}${d?`<small>${d}</small>`:""}</span><span class="ck"></span></button>`).join("")}</div>
+      <button class="cta" id="go">Continuar</button>
+    </section>`,
+    mount: () => {
+      const go=$("#go"); const upd=()=>go.disabled=!S[key].length; upd();
+      document.querySelectorAll("[data-v]").forEach(x => x.onclick = () => {
+        const v=x.dataset.v, i=S[key].indexOf(v); i>-1?S[key].splice(i,1):S[key].push(v);
+        x.classList.toggle("sel"); upd(); if (navigator.vibrate) navigator.vibrate(8);
+      });
+      go.onclick = next;
+    } };
+}
+
+/* ---------- Lógica del resultado ---------- */
+function analyze(){
+  const has = grp => S.foods.some(id => (F[id].g||[]).includes(grp));
+  const gaps = [];
+  if (!has("hierro")) gaps.push("hierro");
+  if (!has("calcio")) gaps.push("calcio");
+  if (!has("verdura") || S.veg==="0") gaps.push("verdura");
+  if (!has("vitA")) gaps.push("vitA");
+  if (!has("fibra") || S.veg==="0") gaps.push("fibra");
+  const uniq = [...new Set(gaps)];
+
+  const scored = BRIDGES.map(b => {
+    const anchor = b.from.find(id => S.foods.includes(id));
+    if (!anchor) return null;
+    let s = 10 + b.nut.filter(n => uniq.includes(n)).length * 6;
+    if (S.mixed==="separado" && /pasta-calabaza|arroz-huevo|arrozrojo/.test(b.id)) s -= 5;
+    if (S.texture==="crujiente" && /camote|zanahoria|nuggets|papas-horno|molletes/.test(b.id)) s += 4;
+    if (S.texture==="cremoso" && /yogur|licuado|pasta-calabaza|sopa/.test(b.id)) s += 4;
+    if (S.texture==="suave" && /arroz|pan|hotcake|quesadilla/.test(b.id)) s += 4;
+    if (b.id==="papas-horno") s -= 3; // paso mínimo: solo si no hay mejor opción
+    return {...b, anchor, s};
+  }).filter(Boolean).sort((a,b)=>b.s-a.s);
+  let picks = scored.slice(0,3);
+  if (picks.length < 3) {
+    for (const id of ["hotcake-platano","licuado","camote","papas-horno"]) {
+      if (picks.length<3 && !picks.some(p=>p.id===id)) picks.push({...BRIDGES.find(b=>b.id===id), anchor:null});
+    }
+  }
+
+  const texName = {crujiente:"Crujiente",suave:"Suavecito",cremoso:"Cremoso",seco:"Firme"}[S.texture] || "Suavecito";
+  const colorCount = {}; S.foods.forEach(id=>{ const c=F[id].c; colorCount[c]=(colorCount[c]||0)+1; });
+  const topColor = Object.entries(colorCount).sort((a,b)=>b[1]-a[1])[0]?.[0] || "blanco";
+  const colName = {blanco:"Neutro",dorado:"Dorado",naranja:"Cálido",rojo:"Intenso",verde:"Verde",cafe:"Tierra",amarillo:"Cálido"}[topColor];
+  const traits = [
+    {crujiente:"Ama lo crujiente",suave:"Prefiere lo parejito",cremoso:"Prefiere lo cremoso",seco:"Prefiere lo firme"}[S.texture],
+    {blanco:"Colores claros",dorado:"Tonos dorados",naranja:"Tonos cálidos",rojo:"Colores intensos",verde:"Acepta verdes",cafe:"Tonos tierra",amarillo:"Tonos cálidos"}[topColor],
+    {separado:"Todo separado","mezcla-poco":"Poca mezcla",mezcla:"Acepta mezclas"}[S.mixed] || "",
+  ].filter(Boolean);
+
+  return {gaps:uniq.slice(0,3), picks, profile:`${texName} & ${colName}`, traits};
+}
+
+function renderResult(){
+  const r = analyze();
+  const n = S.foods.length;
+  const pr = CONFIG.price;
+  const days = ["L","M","M","J","V","S","D"];
+  const worryLine = {
+    nutrientes:`Te preocupa que le falten nutrientes. Aquí arriba ves exactamente dónde poner atención.`,
+    crecimiento:`Te preocupa su crecimiento. Estos nutrientes son justo los que más pesan en esta etapa.`,
+    futuro:`Te preocupa que esto siga igual. Por eso el plan avanza en pasos pequeñitos, semana a semana.`,
+    familia:`Quieres comer en familia sin pelear. Empezar desde lo que ya acepta le quita la presión a la mesa.`,
+  }[S.worry] || "";
+
+  return `
+  <section class="screen">
+    <div class="r-head">
+      <div class="eyebrow">Resultado listo</div>
+      <h1>El mapa alimentario de ${N()}</h1>
+    </div>
+
+    <div class="card profile">
+      <span class="tag">Perfil sensorial</span>
+      <h2>${esc(r.profile)}</h2>
+      <p>${N()} se siente segur${g("o","a")} con alimentos predecibles. Con este perfil, el camino es <b>parecerse a lo que ya come</b>, no cambiarlo de golpe.</p>
+      <div class="traits">${r.traits.map(t=>`<span>${t}</span>`).join("")}</div>
+    </div>
+
+    <div class="card">
+      <h3>Su baraja hoy</h3>
+      <p class="lead">Las cartas seguras de ${N()}:</p>
+      <div class="mapgrid">
+        <div class="m1"><b>${n}</b><small>Acepta</small></div>
+        <div class="m2"><b>${r.picks.length}</b><small>Para explorar</small></div>
+        <div class="m3"><b>?</b><small>Por descubrir</small></div>
+      </div>
+      <div class="mydeck">${S.foods.map(id=>card(F[id],F[id].num-1)).join("")}</div>
+    </div>
+
+    <div class="card">
+      <h3>Lo que podría estar faltando en su plato</h3>
+      <p class="lead">Según las cartas que marcaste, estos nutrientes merecen atención:</p>
+      <div class="watch">
+        ${r.gaps.length ? r.gaps.map(k=>`<div><span class="em">${WATCH[k].e}</span><span><b>${WATCH[k].n}</b><small>${WATCH[k].why}</small></span></div>`).join("")
+          : `<div class="ok"><span class="em">✅</span><span><b>Buena variedad de grupos</b><small>Aun así, ampliar el repertorio da más seguridad a largo plazo.</small></span></div>`}
+      </div>
+      ${r.gaps.length?`<div class="urg">Cada mes con el mismo plato es un mes más con los mismos huecos. Lo bueno: se puede empezar hoy, desde lo que ya le gusta.</div>`:""}
+      ${worryLine?`<p class="disc" style="font-size:15px;color:var(--ink);font-weight:700">${worryLine}</p>`:""}
+      <p class="disc">Esto es una orientación, no un diagnóstico. Si te preocupa, consulta a su pediatra o nutriólogo.</p>
+    </div>
+
+    <div class="card">
+      <h3>3 cartas nuevas para ${N()}</h3>
+      <p class="lead">Elegidas por parecerse a lo que ya come <b>y</b> por cubrir lo que falta. La primera es tuya, gratis:</p>
+      ${r.picks.map((b,i)=>`
+        <div class="bridge ${i===0?"open":"locked"}">
+          ${card({...b,num:28+i},i+3,i===0?"":"blur")}
+          <div class="body ${i===0?"":"blur"}">
+            <div class="from">${b.anchor?`Porque le gusta: ${F[b.anchor].e} ${F[b.anchor].n}`:"Primer paso sugerido"}</div>
+            <div class="to">${b.to}</div>
+            <div class="why">${b.why}</div>
+            ${b.nut.filter(x=>WATCH[x]).slice(0,2).map(x=>`<span class="nut">+ ${WATCH[x].n}</span>`).join("")}
+          </div>
+          ${i===0?`<div class="recipe"><b>Cómo hacerlo:</b><ol>${b.recipe.map(s=>`<li>${s}</li>`).join("")}</ol></div>`:""}
+          ${i>0?`<div class="lock"><span>🔒 En tu plan completo</span></div>`:""}
+        </div>`).join("")}
+    </div>
+
+    <div class="card">
+      <h3>Su primera semana</h3>
+      <p class="lead">Un paso pequeñito por día, siempre junto a sus alimentos de siempre.</p>
+      <div class="week">
+        ${days.map((d,i)=>`<div class="${i===0?"now":""}">${d}<span class="${i===0?"":"blur"}">${i===0?r.picks[0].e:["🍠","🥕","🍳","🥞","🫓","🥭"][i-1]}</span></div>`).join("")}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Así se ve el camino</h3>
+      <p class="lead">Sin forzar. Sin pelear. Paso a pasito.</p>
+      <div class="journey">
+        <div><b>Semana 1 · Explorar</b><small>${N()} ve, toca y huele sus cartas nuevas junto a lo de siempre.</small></div>
+        <div><b>Semana 2 · Probar</b><small>Registras qué aceptó, qué toleró y qué rechazó. El mapa se ajusta solito.</small></div>
+        <div><b>Semana 3 · Ampliar</b><small>Nuevas cartas a partir de lo que ya funcionó.</small></div>
+        <div><b>Semana 4 · Ver el avance</b><small>Comparas su baraja y sus nutrientes con el primer día.</small></div>
+      </div>
+    </div>
+
+    <div class="card letter">
+      <p>Si llegaste hasta aquí, es porque llevas tiempo buscando algo que funcione.</p>
+      <p>Creamos <b>mi mapa.</b> para que no tengas que adivinar qué cocinar cada día, ni pelear en cada comida, ni quedarte con la duda de si ${N()} está recibiendo lo que necesita.</p>
+      <p>No es una dieta. No es un tratamiento. Es un <b>plan que crece con ${N()}</b>, a su ritmo, empezando por lo que ya le gusta.</p>
+      <p class="sig">— El equipo de mi mapa.</p>
+    </div>
+
+    <div class="card offer" id="offer">
+      <span class="ribbon">El plan completo de ${N()}</span>
+      <div class="price">
+        ${CONFIG.oldPrice?`<div class="old">${CONFIG.currency}${CONFIG.oldPrice}/mes</div>`:""}
+        <div class="now">${CONFIG.currency}${pr}<small>/mes</small></div>
+        <div class="per">Menos de ${CONFIG.currency}${Math.ceil(pr/30)} al día · Cancela cuando quieras</div>
+      </div>
+      <ul class="feat">
+        <li><span>🗺️</span>El mapa alimentario de ${N()}, siempre actualizado</li>
+        <li><span>🃏</span>Cartas nuevas cada semana, con receta sencilla</li>
+        <li><span>📝</span>Registro rápido: aceptó, toleró o rechazó</li>
+        <li><span>📈</span>Su avance en variedad y nutrientes, semana a semana</li>
+        <li><span>👩‍🍳</span>Ideas de presentación: formas, colores y texturas que le dan seguridad</li>
+      </ul>
+      <button class="cta rosa pulse" data-buy>Quiero el plan de ${N()} →</button>
+      <div class="guar">
+        <span class="em">🛡️</span>
+        <span><b>Garantía de ${CONFIG.guaranteeDays} días</b><small>Si no te sirve, te devolvemos el 100%. Sin preguntas.</small></span>
+      </div>
+    </div>
+
+    <h3 style="font-size:22px;margin:26px 0 12px">Preguntas frecuentes</h3>
+    <details><summary>¿Es una dieta o un tratamiento para el autismo?</summary><p>No. mi mapa. es una herramienta de organización alimentaria: te ayuda a ampliar el repertorio de tu peque respetando sus preferencias sensoriales. No sustituye a su pediatra, nutriólogo ni terapeutas.</p></details>
+    <details><summary>¿Y si mi hijo rechaza todo?</summary><p>Es normal al principio. Por eso cada paso es pequeñito y siempre va junto a sus alimentos de siempre. Registras lo que pasó y el mapa propone el siguiente paso con base en eso.</p></details>
+    <details><summary>¿Necesito comprar ingredientes caros?</summary><p>No. Las recetas usan ingredientes que encuentras en cualquier mercado, tianguis o súper.</p></details>
+    <details><summary>¿Puedo cancelar cuando quiera?</summary><p>Sí. Sin plazos forzosos. Y tienes ${CONFIG.guaranteeDays} días de garantía total.</p></details>
+
+    <div class="sticky-cta" style="margin-top:14px"><button class="cta rosa" data-buy>Empezar el plan de ${N()} →</button></div>
+
+    <p class="foot">mi mapa. es una herramienta de apoyo para organizar la alimentación familiar. No ofrece diagnóstico, tratamiento ni prescripción médica o nutricional. Ante cualquier duda sobre la salud de tu peque, consulta a un profesional.</p>
+  </section>`;
+}
+
+function buy(){
+  track("InitiateCheckout",{value:CONFIG.price,currency:"MXN"});
+  let url = CONFIG.checkoutUrl;
+  try {
+    const u = new URL(url);
+    if (CONFIG.passUtms) new URLSearchParams(location.search).forEach((v,k)=>{ if(/^utm_|^src$|^sck$|^fbclid$/.test(k)) u.searchParams.set(k,v); });
+    url = u.toString();
+  } catch(e){}
+  location.href = url;
+}
+
+/* ---------- Navegación ---------- */
+const QUESTION_STEPS = SCREENS.length - 2;
+function render(){
+  const sc = SCREENS[step];
+  app.innerHTML = sc.render();
+  window.scrollTo({top:0,behavior:"instant"});
+  $("#bar").style.width = Math.min(100, Math.round(step/QUESTION_STEPS*100)) + "%";
+  $("#top").classList.toggle("hidebar", !!sc.noBar);
+  $("#back").classList.toggle("show", step>0 && !sc.noBack && !sc.noBar);
+  app.querySelectorAll("[data-next]").forEach(b=>b.onclick=next);
+  sc.mount && sc.mount();
+}
+function next(){
+  if (step===0) trackCustom("QuizStarted");
+  history.push(step); step=Math.min(step+1,SCREENS.length-1);
+  trackCustom("QuizStep", {step_number: step, step_name: STEP_NAMES[step] || String(step)});
+  render();
+}
+$("#back").onclick = () => { if(history.length){ step=history.pop(); render(); } };
+render();
+</script>
+</body>
+</html>
