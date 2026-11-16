@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>mi mapa. — App</title>
+<meta name="theme-color" content="#F6F1EA">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F6F1EA; --surface:#FFFFFF; --ink:#1F2421; --muted:#68625C; --line:#E7DED2;
+  --brand:#1E4D45; --brand-2:#2B6A5F; --brand-soft:#E4EEEA;
+  --terra:#B9532D; --terra-soft:#F6E5DB; --gold:#C99332; --gold-soft:#F7EEDB;
+  --alert:#A3402A; --alert-soft:#F8E6E0;
+  --shadow:0 1px 2px rgba(31,36,33,.04), 0 12px 32px -16px rgba(31,36,33,.22);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:"DM Sans",system-ui,sans-serif;font-size:16.5px;line-height:1.5;min-height:100dvh;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.15;letter-spacing:-.015em}
+button,input,select{font:inherit;color:inherit}
+button{border:0;background:none;cursor:pointer}
+.app{max-width:520px;margin:0 auto;min-height:100dvh}
+.app.withnav{padding-bottom:100px}
+header.bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 6px}
+.logo{font-family:Fraunces,serif;font-weight:700;font-size:21px;color:var(--brand);letter-spacing:-.02em}
+.logo b{color:var(--terra)}
+.kid{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:99px;padding:4px 12px 4px 4px;font-weight:600;font-size:14.5px}
+.kid i{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:13px}
+main{padding:6px 18px 24px}
+.screen{animation:in .3s cubic-bezier(.2,.8,.2,1) both}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hello{margin:8px 0 16px}
+.hello small{display:block;color:var(--muted);font-weight:600;font-size:14.5px}
+.hello h1{font-size:27px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:8px}
+.card{background:var(--surface);border-radius:20px;padding:20px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:14px}
+.card h2{font-size:20px;margin-bottom:4px}
+.lead{color:var(--muted);font-size:14.5px}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--brand);color:#fff;font-weight:700;font-size:16.5px;padding:16px;border-radius:14px;margin-top:16px;transition:transform .1s,opacity .2s}
+.btn:active{transform:scale(.99)}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.btn.terra{background:var(--terra)}
+.btn.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--line)}
+.link{color:var(--brand);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.field{display:block;margin-bottom:12px}
+.field span{display:block;font-weight:600;font-size:14px;margin-bottom:6px}
+.input{width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:16.5px;outline:none}
+.input:focus{border-color:var(--brand)}
+.err{background:var(--alert-soft);color:var(--alert);border-radius:12px;padding:10px 12px;font-size:14.5px;font-weight:600;margin:8px 0}
+.ok{background:var(--brand-soft);color:var(--brand);border-radius:12px;padding:10px 12px;font-size:14.5px;font-weight:600;margin:8px 0}
+.center{text-align:center}
+.auth{padding:28px 20px}
+.auth h1{font-size:30px;margin:14px 0 6px}
+
+/* opciones */
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px;font-weight:600;text-align:left;width:100%}
+.opt .em{width:36px;height:36px;border-radius:10px;background:var(--bg);display:grid;place-items:center;font-size:19px;flex:none}
+.opt.sel{border-color:var(--brand);background:var(--brand-soft)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.food{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:11px 4px 9px;text-align:center;font-weight:600;font-size:13px;line-height:1.2}
+.food .em{display:block;font-size:24px;margin-bottom:5px}
+.food.sel{border-color:var(--brand);background:var(--brand-soft)}
+.food.try{border-color:var(--gold);background:var(--gold-soft)}
+.prog{height:6px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 18px}
+.prog i{display:block;height:100%;background:var(--brand);border-radius:99px;transition:width .4s}
+
+/* semana */
+.weekhead{display:flex;align-items:center;gap:14px}
+.weekhead b{display:block;font-size:16.5px}
+.shop{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;padding:12px;border-radius:12px;background:var(--gold-soft);color:#5E4A20;font-weight:700;font-size:15px}
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:0 0 14px}
+.day{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 7px;border-radius:12px;background:#fff;border:1px solid var(--line);font-weight:700;font-size:12px;color:var(--muted)}
+.day b{font-family:Fraunces,serif;font-weight:600;font-size:17px;color:var(--ink)}
+.day i{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.day.full i{background:var(--brand)}.day.part i{background:var(--gold)}
+.day.sel{background:var(--brand);border-color:var(--brand);color:#cfe0db}
+.day.sel b{color:#fff}
+.day.today:not(.sel){border-color:var(--terra)}
+.dayttl{display:flex;justify-content:space-between;align-items:baseline;margin:4px 2px 10px;gap:8px}
+.dayttl h2{font-size:21px}
+.dayttl span{font-weight:600;color:var(--muted);font-size:13.5px;text-align:right}
+.meal{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 14px 12px;margin-bottom:12px;box-shadow:var(--shadow)}
+.meal.has-new{border:1.5px solid var(--terra)}
+.mtop{display:flex;justify-content:space-between;align-items:center}
+.mname{font-weight:700;font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.chg{font-weight:700;font-size:13.5px;color:var(--brand);padding:4px 8px;border-radius:10px}
+.plate{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.it{display:inline-flex;align-items:center;gap:5px;background:var(--bg);border-radius:10px;padding:7px 10px;font-weight:600;font-size:14.5px}
+.it.new{background:var(--terra-soft);color:#7E3519;border:1.5px dashed var(--terra);cursor:pointer}
+.it.new small{font-size:10.5px;font-weight:700;text-transform:uppercase;background:var(--terra);color:#fff;border-radius:6px;padding:1px 5px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.three button{padding:10px 2px;border-radius:12px;font-weight:700;font-size:14px;border:2px solid transparent}
+.three .t1{background:var(--brand-soft);color:var(--brand)}
+.three .t2{background:var(--gold-soft);color:#7A5A12}
+.three .t3{background:#F0EBE5;color:var(--muted)}
+.three button.sel{border-color:currentColor}
+.three.answered button:not(.sel){opacity:.35}
+.tip{font-size:13px;color:var(--muted);font-weight:600;margin-top:8px}
+
+/* avance */
+.hero{background:var(--brand);color:#fff;border:0}
+.hero .eyebrow{color:#F3C9B6}
+.hero h2{font-size:23px}
+.hero p{opacity:.88;font-size:14.5px;margin-top:4px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:120px;margin-top:16px}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bars b{font-family:Fraunces,serif;font-weight:600;font-size:17px}
+.bars span{display:block;width:100%;border-radius:8px 8px 3px 3px;background:rgba(255,255,255,.25)}
+.bars div.now span{background:#F3C9B6}
+.bars small{font-size:11.5px;font-weight:700;opacity:.85}
+.nutri{display:grid;gap:14px;margin-top:14px}
+.nrow{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center}
+.nrow .ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:19px;background:var(--bg)}
+.nrow b{display:block;font-size:15.5px}
+.nrow small{display:block;color:var(--muted);font-size:13px;line-height:1.3}
+.track{height:7px;background:#EEE7DE;border-radius:99px;margin-top:6px;overflow:hidden}
+.track i{display:block;height:100%;border-radius:99px;background:var(--brand-2)}
+.delta{font-family:Fraunces,serif;font-weight:600;font-size:16px;color:var(--brand);white-space:nowrap}
+.delta.flat{color:var(--muted)}
+.swap{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px dashed var(--line)}
+.swap:first-of-type{border-top:0}
+.swap .f{display:flex;flex-direction:column;align-items:center;width:76px;text-align:center;font-size:12px;font-weight:600;line-height:1.2}
+.swap .f span{font-size:26px}
+.swap .from{opacity:.55;text-decoration:line-through}
+.swap .arrow{color:var(--terra);font-weight:700;font-size:18px}
+.swap .gain{flex:1;font-size:13.5px;font-weight:600;color:var(--brand)}
+.empty{color:var(--muted);font-size:14.5px;margin-top:8px}
+.note{font-size:12.5px;color:var(--muted);text-align:center;margin:6px 8px 18px;line-height:1.4}
+.pill{font-weight:700;font-size:12.5px;padding:4px 10px;border-radius:99px}
+.p-ok{background:var(--brand-soft);color:var(--brand)}.p-try{background:var(--gold-soft);color:#7A5A12}.p-no{background:#F0EBE5;color:var(--muted)}
+.group-h{display:flex;justify-content:space-between;align-items:baseline}
+.rows{display:grid;gap:10px;font-size:15px;margin-top:10px}
+.rows div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.rows div:last-child{border:0;padding:0}
+.rows b{font-weight:700;text-align:right}
+
+/* nav */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
+nav.tabs .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+nav.tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;font-weight:700;font-size:12.5px;color:var(--muted);padding:4px 0}
+nav.tabs svg{width:24px;height:24px}
+nav.tabs button.on{color:var(--brand)}
+
+/* hojas */
+.backdrop{position:fixed;inset:0;background:rgba(31,36,33,.4);z-index:30;opacity:0;pointer-events:none;transition:.25s}
+.backdrop.show{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:31;background:var(--bg);border-radius:24px 24px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));max-width:520px;margin:0 auto;transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-height:86dvh;overflow:auto}
+.sheet.show{transform:none}
+.sheet .grab{width:44px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 14px}
+.sheet h3{font-size:21px;margin-bottom:4px}
+.howbox{background:#fff;border-radius:14px;padding:14px;margin-top:14px;font-size:15px}
+.howbox ol{padding-left:20px;display:grid;gap:5px;margin-top:6px}
+.because{display:inline-block;background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:13px;padding:4px 10px;border-radius:99px;margin-top:6px}
+.plus{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.plus span{background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:13px;padding:5px 11px;border-radius:99px}
+.shoplist{display:grid;gap:8px;margin-top:12px}
+.shoplist label{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;font-weight:600}
+.shoplist input{width:20px;height:20px;accent-color:var(--brand)}
+.shoplist label:has(input:checked){opacity:.5;text-decoration:line-through}
+.alts{display:grid;gap:10px;margin-top:12px}
+.alts button{display:flex;flex-wrap:wrap;gap:6px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px;text-align:left}
+.celebrate{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(31,36,33,.45);opacity:0;pointer-events:none;transition:.25s}
+.celebrate.show{opacity:1;pointer-events:auto}
+.celebrate .box{background:#fff;border-radius:24px;padding:26px 22px;text-align:center;max-width:330px;margin:16px}
+.celebrate .big{font-size:52px}
+.toast{position:fixed;left:50%;bottom:108px;transform:translate(-50%,20px);background:var(--ink);color:#fff;font-weight:600;font-size:14.5px;padding:11px 16px;border-radius:99px;opacity:0;transition:.3s;z-index:60;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.loader{display:grid;place-items:center;min-height:70dvh;color:var(--muted);font-weight:600}
+.demo{font-size:12px;text-align:center;padding:5px;background:var(--gold-soft);color:#5E4A20;font-weight:700}
+</style>
+</head>
+<body>
+<div id="demoBar"></div>
+<div class="app" id="root"><div class="loader">Cargando…</div></div>
+<div class="backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet"></div>
+<div class="celebrate" id="celebrate"></div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+/* =========================================================
+   mi mapa. — App v1
+   - ?demo=1  → modo demostración (sin Firebase, guarda en este navegador)
+   ========================================================= */
+const CONFIG = {
+  requireSubscription: false,  // true = solo entra quien tiene suscripción activa (activar cuando el webhook de Hotmart esté listo)
+  checkoutUrl: "https://pay.hotmart.com/SEU-LINK-AQUI",
+  quizUrl: "/",
+  firebaseVersion: "10.12.2",
+};
+import { firebaseConfig } from "./firebase-config.js";
+
+const FOODS = [
+  {id:"arroz",     a:"El",  n:"Arroz blanco",   e:"🍚", tx:"suave",     c:"blanco"},
+  {id:"arrozrojo", a:"El",  n:"Arroz rojo",     e:"🍛", tx:"suave",     c:"naranja"},
+  {id:"sopa",      a:"La",  n:"Sopa de fideo",  e:"🍜", tx:"cremoso",   c:"naranja"},
+  {id:"papas",     a:"Las", n:"Papas fritas",   e:"🍟", tx:"crujiente", c:"dorado"},
+  {id:"pollo",     a:"El",  n:"Pollo",          e:"🍗", tx:"seco",      c:"dorado", g:["prot"]},
+  {id:"nuggets",   a:"Los", n:"Nuggets",        e:"🍤", tx:"crujiente", c:"dorado", g:["prot"]},
+  {id:"quesadilla",a:"La",  n:"Quesadilla",     e:"🧀", tx:"suave",     c:"amarillo", g:["calcio"]},
+  {id:"tortilla",  a:"La",  n:"Tortilla",       e:"🫓", tx:"suave",     c:"blanco"},
+  {id:"molletes",  a:"Los", n:"Molletes",       e:"🥖", tx:"crujiente", c:"dorado", g:["calcio","hierro","fibra"]},
+  {id:"pasta",     a:"La",  n:"Pasta sola",     e:"🍝", tx:"suave",     c:"blanco"},
+  {id:"hotcakes",  a:"Los", n:"Hot cakes",      e:"🥞", tx:"suave",     c:"dorado"},
+  {id:"pan",       a:"El",  n:"Pan / bolillo",  e:"🍞", tx:"suave",     c:"dorado"},
+  {id:"galletas",  a:"Las", n:"Galletas",       e:"🍪", tx:"crujiente", c:"dorado"},
+  {id:"totopos",   a:"Los", n:"Totopos",        e:"🌽", tx:"crujiente", c:"dorado"},
+  {id:"salchicha", a:"La",  n:"Salchicha",      e:"🌭", tx:"suave",     c:"rojo",   g:["prot"]},
+  {id:"gelatina",  a:"La",  n:"Gelatina",       e:"🍮", tx:"cremoso",   c:"rojo"},
+  {id:"leche",     a:"La",  n:"Leche",          e:"🥛", tx:"cremoso",   c:"blanco", g:["calcio"]},
+  {id:"yogur",     a:"El",  n:"Yogur",          e:"🍶", tx:"cremoso",   c:"blanco", g:["calcio"]},
+  {id:"huevo",     a:"El",  n:"Huevo",          e:"🥚", tx:"suave",     c:"amarillo", g:["hierro","prot"]},
+  {id:"frijoles",  a:"Los", n:"Frijolitos",     e:"🫘", tx:"cremoso",   c:"cafe",   g:["hierro","fibra"]},
+  {id:"carne",     a:"La",  n:"Carne",          e:"🥩", tx:"seco",      c:"cafe",   g:["hierro","prot"]},
+  {id:"platano",   a:"El",  n:"Plátano",        e:"🍌", tx:"cremoso",   c:"amarillo", g:["fibra","fruta"]},
+  {id:"manzana",   a:"La",  n:"Manzana",        e:"🍎", tx:"crujiente", c:"rojo",   g:["fibra","fruta"]},
+  {id:"mango",     a:"El",  n:"Mango",          e:"🥭", tx:"cremoso",   c:"naranja",g:["vitA","fruta"]},
+  {id:"zanahoria", a:"La",  n:"Zanahoria",      e:"🥕", tx:"crujiente", c:"naranja",g:["vitA","verdura","fibra"]},
+  {id:"pepino",    a:"El",  n:"Pepino",         e:"🥒", tx:"crujiente", c:"verde",  g:["verdura"]},
+  {id:"brocoli",   a:"El",  n:"Brócoli",        e:"🥦", tx:"suave",     c:"verde",  g:["verdura","vitA","fibra"]},
+];
+
+const BRIDGES = [
+  {id:"camote", from:["papas","totopos"], e:"🍠", a:"El", n:"Camote crujiente",
+   to:"Bastones de camote al horno",
+   why:"Mismo corte y el mismo crujiente que sus papitas. Solo cambia un poquito el color.",
+   nut:["vitA","fibra"], recipe:["Corta el camote en bastones del mismo tamaño que sus papas favoritas.","Úntalos con poquito aceite y sal, igualito que sus papas.","Hornea a 200 °C por 25 min, volteando a la mitad, hasta que queden bien crujientes.","Sírvelos junto a 2 o 3 papas de siempre. Sin presión: que primero los vea y los toque."]},
+  {id:"zanahoria-horno", from:["papas","totopos","nuggets"], e:"🥕", a:"La", n:"Zanahoria dorada",
+   to:"Bastones de zanahoria crujiente",
+   why:"Forma de papa frita, textura crujiente y color naranja: un puente suave hacia las verduras.",
+   nut:["vitA","verdura"], recipe:["Corta la zanahoria en bastones delgaditos.","Mezcla con aceite, sal y una pizca de paprika.","Hornea a 210 °C por 20–25 min hasta que doren.","Preséntalos en el mismo plato o recipiente que usa para sus papas."]},
+  {id:"sopa-zanahoria", from:["sopa"], e:"🍜", a:"La", n:"Sopita naranja",
+   to:"Sopa de fideo con zanahoria licuada en el caldo",
+   why:"Su sopita de siempre. La zanahoria va licuada en el caldo de jitomate: mismo color, misma textura.",
+   nut:["vitA","verdura"], recipe:["Cuece media zanahoria y licúala con el jitomate del caldo.","Prepara la sopa de fideo como siempre, con ese caldo.","Empieza con poquita zanahoria y sube la cantidad cada semana."]},
+  {id:"arrozrojo-zanahoria", from:["arrozrojo","arroz"], e:"🍛", a:"El", n:"Arroz rojo de casa",
+   to:"Arroz rojo con zanahoria rallada finita",
+   why:"Mismo color, misma textura. La zanahoria rallada muy fina se pierde dentro del arroz.",
+   nut:["vitA","verdura"], recipe:["Ralla zanahoria lo más fino posible.","Agrégala al sofrito del arroz, junto con el jitomate.","Cocina el arroz como siempre. Empieza con una cucharada."]},
+  {id:"arroz-huevo", from:["arroz"], e:"🍳", a:"El", n:"Arroz con huevito",
+   to:"Arroz con huevo bien picadito",
+   why:"Sigue siendo su arroz blanco. El huevo, muy finito, casi no cambia la textura.",
+   nut:["hierro","prot"], recipe:["Bate 1 huevo y cocínalo revolviendo hasta que quede en trocitos muy pequeños.","Mezcla una cucharadita con su porción de arroz de siempre.","Si lo acepta, aumenta la cantidad poco a poco durante la semana."]},
+  {id:"quesadilla-frijol", from:["quesadilla","tortilla"], e:"🫓", a:"La", n:"Quesadilla secreta",
+   to:"Quesadilla con frijolitos untados finitos",
+   why:"Su quesadilla de siempre, con una capa muy delgada de frijol que casi no se ve.",
+   nut:["hierro","fibra"], recipe:["Unta una capa muy fina de frijoles refritos (sin trocitos) en la tortilla.","Agrega su queso de siempre y dora como acostumbras.","Corta en la misma forma que le gusta (triángulos, tiras…)."]},
+  {id:"molletes-frijol", from:["pan","molletes"], e:"🥖", a:"Los", n:"Molletes dorados",
+   to:"Molletes con frijolitos y queso gratinado",
+   why:"Pan crujiente por fuera y queso derretido encima. Los frijolitos van untados bien delgados.",
+   nut:["hierro","calcio","fibra"], recipe:["Parte un bolillo y unta una capa delgada de frijoles refritos.","Cubre con su queso favorito.","Gratina en horno o freidora de aire hasta que dore."]},
+  {id:"nuggets-avena", from:["nuggets","pollo"], e:"🍗", a:"Los", n:"Nuggets de casa",
+   to:"Nuggets caseros con avena",
+   why:"Mismo dorado y crujiente que sus nuggets, hechos en casa para sumar fibra.",
+   nut:["fibra","prot"], recipe:["Pica pechuga de pollo muy finita y forma nuggets del tamaño de siempre.","Pásalos por huevo y luego por avena molida con pan molido.","Hornea a 200 °C por 18 min, o en freidora de aire."]},
+  {id:"hotcake-platano", from:["hotcakes","platano","galletas","pan"], e:"🥞", a:"Los", n:"Hot cakes de plátano",
+   to:"Mini hot cakes de plátano",
+   why:"Dulces, suaves y dorados, como los de siempre. Un formato que muchos niños selectivos aceptan rápido.",
+   nut:["fibra","fruta","prot"], recipe:["Machaca 1 plátano maduro con 1 huevo.","Agrega 2 cucharadas de avena molida.","Cocina cucharadas pequeñas en sartén a fuego bajo, 1–2 min por lado."]},
+  {id:"pan-frances", from:["pan","galletas"], e:"🍞", a:"El", n:"Pan francés",
+   to:"Pan francés dorado en tiritas",
+   why:"Su pan de siempre, dorado y suave por dentro. El huevo se integra sin verse.",
+   nut:["hierro","prot","calcio"], recipe:["Bate 1 huevo con un chorrito de leche.","Remoja rebanadas de pan unos segundos.","Dora en sartén con poquita mantequilla.","Corta en tiras, como le gusta comer el pan."]},
+  {id:"yogur-mango", from:["yogur","leche","gelatina"], e:"🥭", a:"El", n:"Yogur de mango",
+   to:"Yogur con un toque de mango",
+   why:"Su yogur de siempre, cremoso y de color clarito. Solo un poquito de sabor nuevo.",
+   nut:["vitA","calcio","fruta"], recipe:["Licúa un trocito de mango hasta que quede totalmente liso.","Mezcla 1 cucharadita en su yogur.","Si lo acepta, sube la cantidad poco a poco."]},
+  {id:"licuado", from:["leche","platano"], e:"🥤", a:"El", n:"Licuado",
+   to:"Licuado de plátano",
+   why:"Líquido, dulce y en vaso: cero texturas sorpresa.",
+   nut:["calcio","fibra","fruta"], recipe:["Licúa 1 vaso de leche con 1/2 plátano maduro.","Sírvelo en su vaso favorito, frío o como lo prefiera."]},
+  {id:"pasta-calabaza", from:["pasta","quesadilla"], e:"🍝", a:"La", n:"Pasta con quesito",
+   to:"Pasta con salsa de queso y calabaza",
+   why:"Salsa cremosa de queso con calabaza escondida, de color muy parecido.",
+   nut:["vitA","calcio","verdura"], recipe:["Cuece calabaza de Castilla o calabacita y licúala muy lisa.","Mézclala con su salsa de queso o queso derretido.","Agrega poquita a su pasta de siempre."]},
+  {id:"papas-horno", from:["papas","arroz","pasta","pan","tortilla","sopa","arrozrojo"], e:"🥔", a:"La", n:"Papa al horno",
+   to:"Papas al horno en gajos",
+   why:"El mismo ingrediente que ya le encanta, en otra forma. Es el paso más pequeñito posible.",
+   nut:["fibra"], recipe:["Corta papas en gajos, con piel.","Aceite, sal y horno a 210 °C por 30 min.","Sírvelas junto a sus papas fritas de siempre."]},
+];
+
+/* Dónde cabe cada alimento en el día */
+const SLOTS_OF = {
+  arroz:["com","cen"], arrozrojo:["com"], sopa:["com"], papas:["com","cen"], pollo:["com","cen"], nuggets:["com","cen"],
+  quesadilla:["cen","des"], tortilla:["com","cen"], molletes:["des","cen"], pasta:["com","cen"], hotcakes:["des"], pan:["des","cen"],
+  galletas:["col"], totopos:["col"], salchicha:["cen","com"], gelatina:["col"], leche:["des","cen"], yogur:["col","des"],
+  huevo:["des","cen"], frijoles:["com","cen"], carne:["com"], platano:["col","des"], manzana:["col"], mango:["col"],
+  zanahoria:["col","com"], pepino:["col"], brocoli:["com"],
+  "camote":["com","col"], "zanahoria-horno":["com","col"], "sopa-zanahoria":["com"], "arrozrojo-zanahoria":["com"], "arroz-huevo":["com","cen"],
+  "quesadilla-frijol":["cen"], "molletes-frijol":["des","cen"], "nuggets-avena":["com","cen"], "hotcake-platano":["des"], "pan-frances":["des"],
+  "yogur-mango":["col","des"], "licuado":["des"], "pasta-calabaza":["com","cen"], "papas-horno":["com","cen"],
+};
+/* Alérgenos: leche, huevo, trigo, cacahuate */
+const ALG_OF = {
+  quesadilla:["leche"], molletes:["leche","trigo"], pasta:["trigo"], hotcakes:["leche","huevo","trigo"], pan:["trigo"], galletas:["trigo"],
+  leche:["leche"], yogur:["leche"], huevo:["huevo"], nuggets:["trigo"], salchicha:[],
+  "arroz-huevo":["huevo"], "quesadilla-frijol":["leche"], "molletes-frijol":["leche","trigo"], "nuggets-avena":["huevo","trigo"],
+  "hotcake-platano":["huevo"], "pan-frances":["huevo","leche","trigo"], "yogur-mango":["leche"], "licuado":["leche"], "pasta-calabaza":["leche","trigo"],
+};
+/* Ultraprocesados */
+const UP_OF = { papas:1, nuggets:1, galletas:1, totopos:1, salchicha:1, gelatina:1 };
+/* Lista de compras */
+const SHOP_OF = {
+  arroz:["Arroz"], arrozrojo:["Arroz","Jitomate"], sopa:["Fideo","Jitomate"], papas:["Papas"], pollo:["Pollo"], nuggets:["Nuggets"],
+  quesadilla:["Tortillas","Queso Oaxaca"], tortilla:["Tortillas"], molletes:["Bolillo","Frijoles refritos","Queso"], pasta:["Pasta"],
+  hotcakes:["Harina para hot cakes"], pan:["Pan / bolillo"], galletas:["Galletas"], totopos:["Totopos"], salchicha:["Salchichas"],
+  gelatina:["Gelatina"], leche:["Leche"], yogur:["Yogur"], huevo:["Huevo"], frijoles:["Frijoles"], carne:["Carne de res"],
+  platano:["Plátano"], manzana:["Manzana"], mango:["Mango"], zanahoria:["Zanahoria"], pepino:["Pepino"], brocoli:["Brócoli"],
+  "camote":["Camote"], "zanahoria-horno":["Zanahoria"], "sopa-zanahoria":["Zanahoria","Fideo","Jitomate"], "arrozrojo-zanahoria":["Zanahoria","Arroz","Jitomate"],
+  "arroz-huevo":["Huevo","Arroz"], "quesadilla-frijol":["Frijoles refritos","Tortillas","Queso Oaxaca"], "molletes-frijol":["Bolillo","Frijoles refritos","Queso"],
+  "nuggets-avena":["Pechuga de pollo","Avena","Huevo","Pan molido"], "hotcake-platano":["Plátano","Huevo","Avena"], "pan-frances":["Pan","Huevo","Leche"],
+  "yogur-mango":["Yogur","Mango"], "licuado":["Leche","Plátano"], "pasta-calabaza":["Pasta","Calabaza","Queso"], "papas-horno":["Papas"],
+};
+/* Nombres cortos para los alimentos puente */
+const SHORT_OF = {
+  "camote":"Camote al horno", "zanahoria-horno":"Zanahoria crujiente", "sopa-zanahoria":"Sopa con zanahoria", "arrozrojo-zanahoria":"Arroz rojo con zanahoria",
+  "arroz-huevo":"Arroz con huevito", "quesadilla-frijol":"Quesadilla con frijol", "molletes-frijol":"Molletes con frijol", "nuggets-avena":"Nuggets de avena",
+  "hotcake-platano":"Hot cakes de plátano", "pan-frances":"Pan francés", "yogur-mango":"Yogur con mango", "licuado":"Licuado de plátano",
+  "pasta-calabaza":"Pasta con calabaza", "papas-horno":"Papas al horno",
+};
+
+
+/* =========================================================
+   Capa de datos: Firebase real, o modo demo en localStorage
+   ========================================================= */
+const DEMO = new URLSearchParams(location.search).has("demo");
+const DB = await (async () => {
+  if (DEMO) {
+    document.getElementById("demoBar").innerHTML = '<div class="demo">MODO DEMOSTRACIÓN · los datos quedan solo en este navegador</div>';
+    const K = "mimapa_demo_";
+    const ls = { get:k=>{try{return JSON.parse(localStorage.getItem(K+k))}catch(e){return null}}, set:(k,v)=>{try{localStorage.setItem(K+k,JSON.stringify(v))}catch(e){}} };
+    let user = ls.get("user"); let cb = ()=>{};
+    return {
+      onAuth(f){ cb=f; setTimeout(()=>f(user),0); },
+      async signUp(email){ user={uid:"demo",email}; ls.set("user",user); cb(user); },
+      async signIn(email){ user={uid:"demo",email}; ls.set("user",user); cb(user); },
+      async reset(){},
+      async signOut(){ user=null; ls.set("user",null); cb(null); },
+      async getProfile(){ return ls.get("profile"); },
+      async saveProfile(uid,p){ ls.set("profile",{...(ls.get("profile")||{}),...p}); },
+      async getWeek(uid,id){ return (ls.get("weeks")||{})[id]||null; },
+      async saveWeek(uid,id,w){ const all=ls.get("weeks")||{}; all[id]=w; ls.set("weeks",all); },
+      async listWeeks(){ const all=ls.get("weeks")||{}; return Object.keys(all).sort().map(id=>({id,...all[id]})); },
+      async getSubscription(){ return {status:"active"}; },
+    };
+  }
+  const v = CONFIG.firebaseVersion, base = `https://www.gstatic.com/firebasejs/${v}/`;
+  const [{initializeApp}, A, F] = await Promise.all([import(base+"firebase-app.js"), import(base+"firebase-auth.js"), import(base+"firebase-firestore.js")]);
+  const app = initializeApp(firebaseConfig);
+  const auth = A.getAuth(app); auth.languageCode = "es";
+  const db = F.getFirestore(app);
+  const u = uid => F.doc(db,"users",uid);
+  return {
+    onAuth(f){ A.onAuthStateChanged(auth, f); },
+    signUp(email,pw){ return A.createUserWithEmailAndPassword(auth,email,pw); },
+    signIn(email,pw){ return A.signInWithEmailAndPassword(auth,email,pw); },
+    reset(email){ return A.sendPasswordResetEmail(auth,email); },
+    signOut(){ return A.signOut(auth); },
+    async getProfile(uid){ const s=await F.getDoc(u(uid)); return s.exists()?s.data():null; },
+    saveProfile(uid,p){ return F.setDoc(u(uid),p,{merge:true}); },
+    async getWeek(uid,id){ const s=await F.getDoc(F.doc(db,"users",uid,"weeks",id)); return s.exists()?s.data():null; },
+    saveWeek(uid,id,w){ return F.setDoc(F.doc(db,"users",uid,"weeks",id),w); },
+    async listWeeks(uid){ const q=await F.getDocs(F.collection(db,"users",uid,"weeks")); return q.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.id<b.id?-1:1); },
+    async getSubscription(email){ try{ const s=await F.getDoc(F.doc(db,"subscriptions",(email||"").toLowerCase())); return s.exists()?s.data():null; }catch(e){ return null; } },
+  };
+})();
+
+/* =========================================================
+   Estado + utilidades
+   ========================================================= */
+const S = { user:null, profile:null, week:null, weekId:null, weeks:[], tab:"hoy", sel:null, view:"loading", authMode:"signup", ob:null };
+const $ = s => document.querySelector(s);
+const root = $("#root");
+const esc = s => String(s??"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const kid = () => esc(S.profile?.kidName || "tu peque");
+const g = (m,f) => S.profile?.sex==="f" ? f : m;
+function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),2400); }
+function mondayOf(d){ const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); const wd=(x.getDay()+6)%7; x.setDate(x.getDate()-wd); return x; }
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const todayIdx = () => (new Date().getDay()+6)%7;
+const DN=["L","M","M","J","V","S","D"], DAYS=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
+const SLOTS=[["des","Desayuno"],["com","Comida"],["col","Colación"],["cen","Cena"]];
+const NUTS = {fibra:{e:"🌾",n:"Fibra",why:"Digestión, menos estreñimiento"},prot:{e:"💪",n:"Proteína",why:"Crecimiento y fuerza"},hierro:{e:"🩸",n:"Hierro",why:"Energía y concentración"},calcio:{e:"🦴",n:"Calcio",why:"Huesos y dientes"},vitA:{e:"👁️",n:"Vitamina A",why:"Vista, piel y defensas"}};
+const errMsg = e => ({ "auth/email-already-in-use":"Ese correo ya tiene cuenta. Toca “Ya tengo cuenta”.", "auth/invalid-email":"El correo no es válido.", "auth/weak-password":"La contraseña debe tener al menos 6 caracteres.", "auth/invalid-credential":"Correo o contraseña incorrectos.", "auth/wrong-password":"Correo o contraseña incorrectos.", "auth/user-not-found":"No encontramos una cuenta con ese correo.", "auth/too-many-requests":"Demasiados intentos. Espera unos minutos.", "auth/network-request-failed":"Sin conexión. Revisa tu internet." }[e?.code] || "Algo salió mal. Intenta de nuevo.");
+
+/* =========================================================
+   Motor: alimentos, puentes, menú y nutrientes
+   ========================================================= */
+const ALL = {};
+FOODS.forEach(f => ALL[f.id] = {id:f.id, n:f.n, e:f.e, g:f.g||[], slots:SLOTS_OF[f.id]||["com"], alg:ALG_OF[f.id]||[], shop:SHOP_OF[f.id]||[f.n], up:!!UP_OF[f.id]});
+BRIDGES.forEach(b => ALL[b.id] = {id:b.id, n:SHORT_OF[b.id]||b.to, e:b.e, g:b.nut||[], slots:SLOTS_OF[b.id]||["com"], alg:ALG_OF[b.id]||[], shop:SHOP_OF[b.id]||[], bridge:b});
+const NUM = id => { const g=ALL[id]?.g||[]; return {fibra:g.includes("fibra")?2:0, prot:g.includes("prot")?2:0, hierro:g.includes("hierro")?2:0, calcio:g.includes("calcio")?2:0, vitA:g.includes("vitA")?2:0}; };
+const allergic = id => (ALL[id]?.alg||[]).some(a => (S.profile?.allergies||[]).includes(a));
+const status = id => S.profile?.status?.[id] || "no";
+
+function pickBridges(p){
+  const safe = Object.keys(p.status||{}).filter(id=>p.status[id]==="ok");
+  const has = grp => safe.some(id=>(ALL[id]?.g||[]).includes(grp));
+  const gaps = ["hierro","calcio","vitA","fibra","verdura"].filter(x=>!has(x));
+  const cand = BRIDGES.filter(b => p.status[b.id]!=="ok" && !(ALG_OF[b.id]||[]).some(a=>(p.allergies||[]).includes(a)))
+    .map(b => { const anchor=b.from.find(id=>safe.includes(id)); if(!anchor) return null;
+      let s=10 + (b.nut||[]).filter(n=>gaps.includes(n)).length*6 + (p.status[b.id]==="try"?8:0) - (b.id==="papas-horno"?3:0);
+      return {id:b.id, anchor, s}; }).filter(Boolean).sort((a,b)=>b.s-a.s);
+  return cand.slice(0,3);
+}
+function genMenu(p){
+  const safe = Object.keys(p.status||{}).filter(id=>p.status[id]==="ok" && ALL[id]);
+  const bridges = pickBridges(p);
+  const bySlot = sl => { const l=safe.filter(id=>ALL[id].slots.includes(sl)); return l.length?l:safe; };
+  const menu = {}, rot = {des:0,com:0,col:0,cen:0}; const startDay = todayIdx();
+  for (let d=0; d<7; d++){
+    const day = {};
+    for (const [sl] of SLOTS){
+      const pool = bySlot(sl); const n = sl==="col"?1:2; const plate=[];
+      for (let k=0;k<n && k<pool.length;k++){ plate.push(pool[(rot[sl]+k)%pool.length]); }
+      rot[sl] += 1; day[sl] = [...new Set(plate)];
+    }
+    if (bridges.length){
+      const b = bridges[Math.floor(((d - startDay + 7) % 7)/2)%bridges.length];   // cada puente 2 días seguidos, empezando hoy
+      const sl = ALL[b.id].slots.find(x=>x!=="col") || "com";
+      day[sl] = [day[sl][0], b.id].filter(Boolean);
+    }
+    menu[d] = day;
+  }
+  return menu;
+}
+function weekTotals(w){
+  const t={fibra:0,prot:0,hierro:0,calcio:0,vitA:0}; let days=0, meals=0, eaten=new Set(), ultra=0;
+  for (let d=0; d<7; d++){ const log=w?.log?.[d]||{}; const ks=Object.keys(log); if(ks.length) days++; meals+=ks.length;
+    ks.forEach(sl=>{ const f=log[sl]==="full"?1:log[sl]==="part"?.5:0; if(!f) return;
+      (w.menu?.[d]?.[sl]||[]).forEach(id=>{ if(!ALL[id]) return; eaten.add(id); const n=NUM(id); for(const k in t) t[k]+=n[k]*f; if(ALL[id].up) ultra+=f; }); }); }
+  return {t, days, meals, eaten:[...eaten], ultra};
+}
+function baseline(p){ // un día típico con solo sus alimentos seguros iniciales
+  const ids = p.initialSafe||[]; const t={fibra:0,prot:0,hierro:0,calcio:0,vitA:0};
+  if(!ids.length) return t; ids.forEach(id=>{const n=NUM(id); for(const k in t) t[k]+=n[k];});
+  for(const k in t) t[k] = t[k]/ids.length*1.75; return t;   // por comida (≈1.75 alimentos por plato)
+}
+
+/* =========================================================
+   Arranque y flujo
+   ========================================================= */
+DB.onAuth(async user => {
+  S.user = user;
+  if (!user){ S.view="auth"; return render(); }
+  S.view="loading"; render();
+  if (CONFIG.requireSubscription && !DEMO){
+    const sub = await DB.getSubscription(user.email);
+    if (!sub || sub.status!=="active"){ S.view="paywall"; return render(); }
+  }
+  S.profile = await DB.getProfile(user.uid);
+  if (!S.profile || !S.profile.status){ startOnboarding(); return; }
+  await loadWeek(); S.view="main"; render();
+});
+async function loadWeek(){
+  S.weekId = ymd(mondayOf(new Date()));
+  let w = await DB.getWeek(S.user.uid, S.weekId);
+  if (!w){ w = {menu: genMenu(S.profile), log:{}, createdAt: Date.now()}; await DB.saveWeek(S.user.uid, S.weekId, w); }
+  S.week = w; S.sel = todayIdx();
+  S.weeks = await DB.listWeeks(S.user.uid);
+}
+
+/* ---------- Autenticación ---------- */
+function viewAuth(){
+  const up = S.authMode==="signup", fg = S.authMode==="forgot";
+  return `<div class="auth screen">
+    <div class="logo">mi mapa<b>.</b></div>
+    <h1>${fg?"Recupera tu acceso":up?"Crea tu cuenta":"Bienvenida de nuevo"}</h1>
+    <p class="lead">${fg?"Te enviaremos un correo para crear una nueva contraseña.":up?"Usa el <b>mismo correo con el que hiciste tu compra</b>.":"Entra con tu correo y contraseña."}</p>
+    <div style="margin-top:18px">
+      <label class="field"><span>Correo</span><input class="input" id="email" type="email" autocomplete="email" inputmode="email" placeholder="tucorreo@ejemplo.com"></label>
+      ${fg?"":`<label class="field"><span>Contraseña</span><input class="input" id="pw" type="password" autocomplete="${up?"new-password":"current-password"}" placeholder="${up?"Mínimo 6 caracteres":"Tu contraseña"}"></label>`}
+      <div id="msg"></div>
+      <button class="btn" id="go">${fg?"Enviar correo":up?"Crear cuenta":"Entrar"}</button>
+    </div>
+    <p class="center" style="margin-top:18px">${fg?`<button class="link" data-mode="signin">Volver</button>`:up?`¿Ya tienes cuenta? <button class="link" data-mode="signin">Entrar</button>`:`¿Primera vez? <button class="link" data-mode="signup">Crear cuenta</button>`}</p>
+    ${!up&&!fg?`<p class="center" style="margin-top:10px"><button class="link" data-mode="forgot">Olvidé mi contraseña</button></p>`:""}
+  </div>`;
+}
+function mountAuth(){
+  root.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{S.authMode=b.dataset.mode;render();});
+  const go=$("#go"), msg=$("#msg");
+  const run = async () => {
+    const email=$("#email").value.trim(), pw=$("#pw")?.value||"";
+    msg.innerHTML=""; go.disabled=true;
+    try{
+      if(S.authMode==="forgot"){ await DB.reset(email); msg.innerHTML='<div class="ok">Listo. Revisa tu correo (también en spam).</div>'; }
+      else if(S.authMode==="signup"){ await DB.signUp(email,pw); }
+      else { await DB.signIn(email,pw); }
+    }catch(e){ msg.innerHTML=`<div class="err">${errMsg(e)}</div>`; }
+    go.disabled=false;
+  };
+  go.onclick=run; root.querySelectorAll("input").forEach(i=>i.onkeydown=e=>{if(e.key==="Enter")run();});
+}
+function viewPaywall(){
+  return `<div class="auth screen"><div class="logo">mi mapa<b>.</b></div>
+    <h1>Tu plan aún no está activo</h1>
+    <p class="lead">No encontramos una suscripción activa para <b>${esc(S.user?.email)}</b>. Si ya pagaste, usa en la app el <b>mismo correo de la compra</b>. La activación puede tardar unos minutos.</p>
+    <a class="btn terra" href="${CONFIG.checkoutUrl}" style="text-decoration:none">Activar mi plan</a>
+    <button class="btn ghost" id="retry">Ya pagué, revisar de nuevo</button>
+    <p class="center" style="margin-top:16px"><button class="link" id="out">Usar otro correo</button></p></div>`;
+}
+function mountPaywall(){ $("#retry").onclick=()=>location.reload(); $("#out").onclick=()=>DB.signOut(); }
+
+/* ---------- Onboarding (aprovecha las respuestas del test) ---------- */
+function startOnboarding(){
+  let q=null; try{ q=JSON.parse(localStorage.getItem("mimapa_quiz")||"null"); }catch(e){}
+  S.ob = { step:0, fromQuiz:!!q, name:q?.name||"", sex:q?.sex||"m", age:q?.age||"", foods:(q?.foods||[]).filter(id=>ALL[id]), allergies:[], texture:q?.texture||"" };
+  S.view="onboarding"; render();
+}
+const OB_STEPS = 4;
+function viewOnboarding(){
+  const o=S.ob, pct=Math.round(o.step/OB_STEPS*100), nm=esc(o.name||"tu peque");
+  const head = `<div class="logo" style="margin:4px 0 10px">mi mapa<b>.</b></div><div class="prog"><i style="width:${pct}%"></i></div>`;
+  if(o.step===0) return `<div class="screen">${head}
+    ${o.fromQuiz?`<div class="ok">✓ Usamos tus respuestas del test. Solo confirma.</div>`:""}
+    <div class="eyebrow">Paso 1 de 4</div><h1 style="font-size:26px">¿Cómo se llama tu peque?</h1>
+    <input class="input" id="nm" style="margin-top:14px" maxlength="20" placeholder="Su nombre" value="${esc(o.name)}">
+    <div class="opts" style="grid-template-columns:1fr 1fr">
+      <button class="opt ${o.sex==="m"?"sel":""}" data-sex="m"><span class="em">👦</span>Niño</button>
+      <button class="opt ${o.sex==="f"?"sel":""}" data-sex="f"><span class="em">👧</span>Niña</button></div>
+    <button class="btn" id="nx" ${o.name.trim()?"":"disabled"}>Continuar</button></div>`;
+  if(o.step===1) return `<div class="screen">${head}<div class="eyebrow">Paso 2 de 4</div><h1 style="font-size:26px">¿Qué edad tiene ${nm}?</h1>
+    <div class="opts">${[["2-3","2 a 3 años","🧸"],["4-6","4 a 6 años","🎒"],["7-10","7 a 10 años","📚"],["11+","11 años o más","🎧"]].map(([v,l,e])=>`<button class="opt ${o.age===v?"sel":""}" data-age="${v}"><span class="em">${e}</span>${l}</button>`).join("")}</div></div>`;
+  if(o.step===2) return `<div class="screen">${head}<div class="eyebrow">Paso 3 de 4</div><h1 style="font-size:26px">¿Qué come ${nm} sin problema?</h1>
+    <p class="lead">Marca sus alimentos seguros. De aquí sale su menú.</p>
+    <div class="grid">${FOODS.map(f=>`<button class="food ${o.foods.includes(f.id)?"sel":""}" data-food="${f.id}"><span class="em">${f.e}</span>${f.n}</button>`).join("")}</div>
+    <div style="position:sticky;bottom:10px"><button class="btn" id="nx" ${o.foods.length?"":"disabled"}>Continuar (${o.foods.length})</button></div></div>`;
+  if(o.step===3) return `<div class="screen">${head}<div class="eyebrow">Paso 4 de 4</div><h1 style="font-size:26px">¿${nm} tiene alguna alergia?</h1>
+    <p class="lead">Nunca te sugeriremos alimentos con estos ingredientes.</p>
+    <div class="opts">${[["leche","Leche y lácteos","🥛"],["huevo","Huevo","🥚"],["trigo","Trigo / gluten","🌾"],["cacahuate","Cacahuate y nueces","🥜"]].map(([v,l,e])=>`<button class="opt ${o.allergies.includes(v)?"sel":""}" data-alg="${v}"><span class="em">${e}</span>${l}</button>`).join("")}</div>
+    <button class="btn" id="nx">${o.allergies.length?"Continuar":"No tiene alergias"}</button></div>`;
+  return `<div class="screen center" style="padding-top:40px">${head}<div style="font-size:52px">🗓️</div><h1 style="font-size:26px;margin:10px 0">Armando el primer menú de ${nm}…</h1><p class="lead">Un alimento nuevo por día, siempre junto a sus alimentos seguros.</p></div>`;
+}
+function mountOnboarding(){
+  const o=S.ob;
+  if(o.step===0){ const i=$("#nm"),b=$("#nx"); i.oninput=()=>{o.name=i.value.trimStart();b.disabled=!o.name.trim();}; root.querySelectorAll("[data-sex]").forEach(x=>x.onclick=()=>{o.sex=x.dataset.sex;render();}); b.onclick=()=>{o.name=o.name.trim();o.step++;render();}; }
+  if(o.step===1) root.querySelectorAll("[data-age]").forEach(x=>x.onclick=()=>{o.age=x.dataset.age;o.step++;render();});
+  if(o.step===2){ root.querySelectorAll("[data-food]").forEach(x=>x.onclick=()=>{const id=x.dataset.food,i=o.foods.indexOf(id);i>-1?o.foods.splice(i,1):o.foods.push(id);render();}); $("#nx").onclick=()=>{o.step++;render();}; }
+  if(o.step===3){ root.querySelectorAll("[data-alg]").forEach(x=>x.onclick=()=>{const v=x.dataset.alg,i=o.allergies.indexOf(v);i>-1?o.allergies.splice(i,1):o.allergies.push(v);render();}); $("#nx").onclick=finishOnboarding; }
+}
+async function finishOnboarding(){
+  const o=S.ob; o.step=4; render();
+  const st={}; o.foods.forEach(id=>st[id]="ok");
+  S.profile = { kidName:o.name, sex:o.sex, age:o.age, allergies:o.allergies, texture:o.texture, status:st, initialSafe:[...o.foods], email:S.user.email, createdAt:Date.now() };
+  try{ await DB.saveProfile(S.user.uid, S.profile); await loadWeek(); try{localStorage.removeItem("mimapa_quiz");}catch(e){}
+    setTimeout(()=>{ S.view="main"; S.tab="hoy"; render(); }, 900);
+  }catch(e){ toast("No se pudo guardar. Revisa tu conexión."); o.step=3; render(); }
+}
+
+/* ---------- Mi semana ---------- */
+function ring(p,size=62){const r=size/2-6,c=2*Math.PI*r;return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="flex:none"><circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="#EEE7DE" stroke-width="7" fill="none"/><circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="var(--brand)" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p)}" transform="rotate(-90 ${size/2} ${size/2})"/><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-family="Fraunces" font-weight="600" font-size="14" fill="#1F2421">${Math.round(p*100)}%</text></svg>`}
+const item = id => { const f=ALL[id]; if(!f) return ""; const isNew=!!f.bridge && status(id)!=="ok"; return `<span class="it ${isNew?"new":""}" ${f.bridge?`data-how="${id}"`:""}>${f.e} ${esc(f.n)}${isNew?" <small>nuevo</small>":""}</span>`; };
+function viewHoy(){
+  const w=S.week, d=S.sel, logged=Object.values(w.log||{}).reduce((s,x)=>s+Object.keys(x).length,0);
+  const mon=mondayOf(new Date()); const dayNum=i=>{const x=new Date(mon);x.setDate(x.getDate()+i);return x.getDate();};
+  const st=i=>{const n=Object.keys(w.log?.[i]||{}).length;return !n?"":n===4?"full":"part";};
+  const hasNew=Object.values(w.menu[d]).flat().some(id=>ALL[id]?.bridge && status(id)!=="ok");
+  return `<section class="screen">
+    <div class="hello"><small>¡Hola! 👋</small><h1>El menú de ${kid()}</h1></div>
+    <div class="card"><div class="weekhead">${ring(logged/28)}<div><b>${logged} de 28 comidas marcadas</b><div class="lead">Cada lunes llega un menú nuevo, según lo que ${kid()} aceptó.</div></div></div>
+      <button class="shop" id="shopBtn">🛒 Lista de compras de la semana</button></div>
+    <div class="days">${DN.map((l,i)=>`<button class="day ${i===d?"sel":""} ${i===todayIdx()?"today":""} ${st(i)}" data-day="${i}">${l}<b>${dayNum(i)}</b><i></i></button>`).join("")}</div>
+    <div class="dayttl"><h2>${d===todayIdx()?"Hoy, "+DAYS[d].toLowerCase():DAYS[d]}</h2><span>${hasNew?"1 alimento nuevo":"Sin novedades"}</span></div>
+    ${SLOTS.map(([sl,label])=>{ const plate=w.menu[d][sl]||[], v=w.log?.[d]?.[sl], nw=plate.some(id=>ALL[id]?.bridge&&status(id)!=="ok");
+      return `<div class="meal ${nw?"has-new":""}"><div class="mtop"><span class="mname">${label}</span>${v?"":`<button class="chg" data-chg="${sl}">↻ cambiar</button>`}</div>
+        <div class="plate">${plate.map(item).join("")}</div>
+        <div class="three ${v?"answered":""}">
+          <button class="t1 ${v==="full"?"sel":""}" data-log="${sl}" data-v="full">😋 Todo</button>
+          <button class="t2 ${v==="part"?"sel":""}" data-log="${sl}" data-v="part">🤏 Un poco</button>
+          <button class="t3 ${v==="none"?"sel":""}" data-log="${sl}" data-v="none">🙅 Nada</button></div>
+        ${nw&&!v?`<div class="tip">Toca el alimento nuevo para ver cómo prepararlo</div>`:""}</div>`; }).join("")}
+  </section>`;
+}
+async function logMeal(sl,v){
+  const d=S.sel; S.week.log=S.week.log||{}; S.week.log[d]=S.week.log[d]||{}; S.week.log[d][sl]=v;
+  const nw=(S.week.menu[d][sl]||[]).find(id=>ALL[id]?.bridge && status(id)!=="ok");
+  let profChanged=false;
+  if(nw && v==="full"){ S.profile.status[nw]="ok"; profChanged=true; }
+  else if(nw && v==="part"){ S.profile.status[nw]="try"; profChanged=true; }
+  render();
+  if(nw && v==="full") celebrate(nw); else if(nw && v==="part") toast("👏 ¡Lo probó! Eso ya es un gran paso"); else if(nw) toast("💛 Está bien. Lo intentamos otro día"); else toast(v==="none"?"Anotado. Mañana es otro día 💛":"Anotado ✓");
+  try{ await DB.saveWeek(S.user.uid,S.weekId,S.week); if(profChanged) await DB.saveProfile(S.user.uid,{status:S.profile.status}); }catch(e){ toast("No se pudo guardar. Revisa tu conexión."); }
+}
+
+/* ---------- Su avance ---------- */
+function viewAvance(){
+  const cur=weekTotals(S.week), base=baseline(S.profile);
+  const ws=S.weeks.some(w=>w.id===S.weekId)?S.weeks.map(w=>w.id===S.weekId?{...S.week,id:w.id}:w):[...S.weeks,{...S.week,id:S.weekId}];
+  const hist=ws.map(w=>weekTotals(w).eaten.length);
+  const enough=cur.meals>=3;
+  const startCount=(S.profile.initialSafe||[]).length;
+  const series=[startCount,...hist]; const max=Math.max(...series,1)+2;
+  const rows=Object.keys(NUTS).map(k=>{ const c=cur.meals?cur.t[k]/cur.meals:0, b=base[k]; return {k,c,b,d:b?Math.round((c-b)/b*100):(c>0?null:0)}; }).sort((a,b)=>(b.d??999)-(a.d??999));
+  const maxC=Math.max(...rows.map(r=>r.c),.01);
+  const wins=BRIDGES.filter(b=>status(b.id)==="ok").map(b=>({b,from:b.from.find(id=>(S.profile.initialSafe||[]).includes(id))})).filter(x=>x.from);
+  return `<section class="screen">
+    <div class="hello"><small>Semana ${S.weeks.length||1}</small><h1>El avance de ${kid()}</h1></div>
+    <div class="card hero"><div class="eyebrow">Variedad en su plato</div>
+      <h2>${startCount} alimentos al empezar · ${Object.values(S.profile.status).filter(x=>x==="ok").length} hoy</h2>
+      <p>Alimentos distintos que comió cada semana. La barra clara es esta semana.</p>
+      <div class="bars">${series.map((r,i)=>`<div class="${i===series.length-1?"now":""}"><b>${r}</b><span style="height:${Math.round(r/max*100)}%"></span><small>${i===0?"Inicio":(i===series.length-1?"Esta sem.":"Sem "+i)}</small></div>`).join("")}</div></div>
+    <div class="card"><h2>Nutrientes en su plato</h2><p class="lead">${enough?`Promedio por comida esta semana, comparado con su punto de partida.`:`Marca al menos 3 comidas en “Mi semana” y aquí verás cómo mejora su plato.`}</p>
+      <div class="nutri">${rows.map(r=>`<div class="nrow"><div class="ic">${NUTS[r.k].e}</div><div><b>${NUTS[r.k].n}</b><small>${NUTS[r.k].why}</small><div class="track"><i style="width:${Math.round(r.c/maxC*100)}%"></i></div></div>
+        <div class="delta ${!enough||r.d===0?"flat":""}">${!enough?"–":r.d===null?"¡Nuevo!":r.d>0?"↑ "+r.d+"%":r.d===0?"=":"↓ "+Math.abs(r.d)+"%"}</div></div>`).join("")}</div></div>
+    <div class="card"><h2>Cambios que lograste</h2><p class="lead" style="margin-bottom:6px">Lo que antes comía → lo que ahora también acepta.</p>
+      ${wins.length?wins.map(x=>`<div class="swap"><div class="f from"><span>${ALL[x.from].e}</span>${esc(ALL[x.from].n)}</div><div class="arrow">→</div><div class="f"><span>${x.b.e}</span>${esc(ALL[x.b.id].n)}</div><div class="gain">+ ${(x.b.nut||[]).filter(n=>NUTS[n]).map(n=>NUTS[n].n).slice(0,2).join(", ")||"variedad"}</div></div>`).join(""):`<p class="empty">Aquí aparecerá cada alimento nuevo que ${kid()} acepte. ¡El primero puede ser esta semana!</p>`}</div>
+    <p class="note">Valores estimados según lo que marcas en la app. Es una guía para acompañar, no un diagnóstico. Ante dudas, consulta a su pediatra o nutriólogo.</p>
+  </section>`;
+}
+
+/* ---------- Sus alimentos ---------- */
+function viewMapa(){
+  const groups=[["ok","Ya lo come","p-ok"],["try","Lo está probando","p-try"]];
+  const ids=st=>Object.keys(ALL).filter(id=>status(id)===st);
+  const next=pickBridges(S.profile).map(x=>x.id);
+  const p=S.profile;
+  return `<section class="screen">
+    <div class="hello"><small>Toca un alimento para cambiarlo</small><h1>Los alimentos de ${kid()}</h1></div>
+    ${groups.map(([st,label,cls])=>{const l=ids(st);return `<div class="card"><div class="group-h"><h2>${label}</h2><span class="pill ${cls}">${l.length}</span></div>
+      ${l.length?`<div class="grid">${l.map(id=>`<button class="food ${st==="ok"?"sel":"try"}" data-food="${id}"><span class="em">${ALL[id].e}</span>${esc(ALL[id].n)}</button>`).join("")}</div>`:`<p class="empty">Todavía nada aquí.</p>`}</div>`;}).join("")}
+    <div class="card"><div class="group-h"><h2>Próximos en su camino</h2><span class="pill p-no">${next.length}</span></div>
+      ${next.length?`<div class="grid">${next.map(id=>`<button class="food" data-how="${id}"><span class="em">${ALL[id].e}</span>${esc(ALL[id].n)}</button>`).join("")}</div>`:`<p class="empty">Marca más alimentos seguros para recibir sugerencias.</p>`}
+      <button class="btn ghost" id="addSafe">+ Agregar alimentos que ya come</button></div>
+    <div class="card"><h2>Datos de ${kid()}</h2><div class="rows">
+      <div><span>Edad</span><b>${esc({"2-3":"2 a 3 años","4-6":"4 a 6 años","7-10":"7 a 10 años","11+":"11+ años"}[p.age]||"—")}</b></div>
+      <div><span>Alergias</span><b>${(p.allergies||[]).length?(p.allergies||[]).map(a=>({leche:"Lácteos",huevo:"Huevo",trigo:"Trigo",cacahuate:"Cacahuate/nueces"}[a])).join(", "):"Ninguna"}</b></div>
+      <div><span>Cuenta</span><b style="font-weight:600">${esc(S.user.email)}</b></div></div>
+      <button class="btn ghost" id="regen">↻ Rehacer el menú de esta semana</button>
+      <button class="btn ghost" id="logout">Cerrar sesión</button></div>
+  </section>`;
+}
+
+/* ---------- Hojas (sheets) ---------- */
+function openSheet(html){ $("#sheet").innerHTML=`<div class="grab"></div>${html}`; $("#sheet").classList.add("show"); $("#backdrop").classList.add("show"); }
+function closeSheet(){ $("#sheet").classList.remove("show"); $("#backdrop").classList.remove("show"); }
+$("#backdrop").onclick=closeSheet;
+function howSheet(id){
+  const f=ALL[id], b=f.bridge, from=b.from.find(x=>status(x)==="ok")||b.from[0];
+  openSheet(`<div style="display:flex;gap:14px;align-items:center"><div style="font-size:44px">${f.e}</div><div><div class="eyebrow" style="margin:0">Alimento puente</div><h3>${esc(b.to)}</h3><span class="because">Porque le gusta: ${esc(ALL[from]?.n||"")}</span></div></div>
+    <p class="lead" style="margin-top:12px">${esc(b.why)}</p>
+    <div class="howbox"><b>Cómo prepararlo</b><ol>${b.recipe.map(s=>`<li>${esc(s)}</li>`).join("")}</ol></div>
+    <div class="plus">${(b.nut||[]).filter(n=>NUTS[n]).map(n=>`<span>+ ${NUTS[n].n}</span>`).join("")}</div>
+    <button class="btn" id="cls">Entendido</button>`);
+  $("#cls").onclick=closeSheet;
+}
+function changeSheet(sl){
+  const safe=Object.keys(S.profile.status).filter(id=>S.profile.status[id]==="ok"&&ALL[id]);
+  const pool=safe.filter(id=>ALL[id].slots.includes(sl)); const src=pool.length?pool:safe;
+  const opts=[]; for(let i=0;i<Math.min(4,src.length);i++){ opts.push([src[i], src[(i+1)%src.length]].filter((v,j,a)=>a.indexOf(v)===j)); }
+  openSheet(`<h3>Cambiar ${SLOTS.find(s=>s[0]===sl)[1].toLowerCase()}</h3><p class="lead">Opciones con alimentos que ya come.</p>
+    <div class="alts">${opts.map((p,i)=>`<button data-alt="${i}">${p.map(id=>`<span class="it">${ALL[id].e} ${esc(ALL[id].n)}</span>`).join("")}</button>`).join("")}</div>`);
+  document.querySelectorAll("[data-alt]").forEach(b=>b.onclick=async()=>{ S.week.menu[S.sel][sl]=opts[+b.dataset.alt]; closeSheet(); render(); toast("Menú actualizado ✓"); try{await DB.saveWeek(S.user.uid,S.weekId,S.week);}catch(e){} });
+}
+function shopSheet(){
+  const set=new Set(); Object.values(S.week.menu).forEach(day=>Object.values(day).flat().forEach(id=>(ALL[id]?.shop||[]).forEach(x=>set.add(x))));
+  openSheet(`<h3>🛒 Lista de compras</h3><p class="lead">Todo para el menú de esta semana.</p>
+    <div class="shoplist">${[...set].sort().map(x=>`<label><input type="checkbox">${esc(x)}</label>`).join("")}</div><button class="btn ghost" id="cls">Cerrar</button>`);
+  $("#cls").onclick=closeSheet;
+}
+function foodSheet(id){
+  openSheet(`<div style="display:flex;gap:14px;align-items:center"><div style="font-size:44px">${ALL[id].e}</div><div><h3>${esc(ALL[id].n)}</h3><p class="lead">¿Cómo está ${kid()} con este alimento?</p></div></div>
+    <div class="opts">${[["ok","😋","Ya lo come"],["try","🤏","Lo está probando"],["no","🙅","Todavía no"]].map(([v,e,l])=>`<button class="opt ${status(id)===v?"sel":""}" data-set="${v}"><span class="em">${e}</span>${l}</button>`).join("")}</div>`);
+  document.querySelectorAll("[data-set]").forEach(b=>b.onclick=async()=>{ S.profile.status[id]=b.dataset.set; closeSheet(); render(); toast("Actualizado ✓"); try{await DB.saveProfile(S.user.uid,{status:S.profile.status});}catch(e){} });
+}
+function addSafeSheet(){
+  openSheet(`<h3>Alimentos que ya come</h3><p class="lead">Marca los que falten.</p>
+    <div class="grid">${FOODS.map(f=>`<button class="food ${status(f.id)==="ok"?"sel":""}" data-tg="${f.id}"><span class="em">${f.e}</span>${f.n}</button>`).join("")}</div><button class="btn" id="cls">Guardar</button>`);
+  document.querySelectorAll("[data-tg]").forEach(b=>b.onclick=()=>{ const id=b.dataset.tg; S.profile.status[id]=status(id)==="ok"?"no":"ok"; b.classList.toggle("sel"); });
+  $("#cls").onclick=async()=>{ closeSheet(); render(); try{await DB.saveProfile(S.user.uid,{status:S.profile.status});}catch(e){} toast("Guardado ✓"); };
+}
+function celebrate(id){
+  const f=ALL[id], el=$("#celebrate");
+  el.innerHTML=`<div class="box"><div class="big">🎉</div><h2 style="margin:6px 0">¡${kid()} se comió ${esc(f.n.toLowerCase())}!</h2><p class="lead">Un alimento nuevo en su lista.</p>
+    <div class="plus" style="justify-content:center">${(f.g||[]).filter(n=>NUTS[n]).map(n=>`<span>+ ${NUTS[n].n}</span>`).join("")}</div><button class="btn" id="celOk">¡Genial!</button></div>`;
+  el.classList.add("show"); $("#celOk").onclick=()=>el.classList.remove("show");
+}
+
+/* ---------- Render ---------- */
+const ICONS = {
+  hoy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
+  avance:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
+  mapa:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>',
+};
+function render(){
+  if(S.view==="loading"){ root.className="app"; root.innerHTML='<div class="loader">Cargando…</div>'; return; }
+  if(S.view==="auth"){ root.className="app"; root.innerHTML=viewAuth(); mountAuth(); return; }
+  if(S.view==="paywall"){ root.className="app"; root.innerHTML=viewPaywall(); mountPaywall(); return; }
+  if(S.view==="onboarding"){ root.className="app"; root.innerHTML=`<main>${viewOnboarding()}</main>`; mountOnboarding(); return; }
+  root.className="app withnav";
+  root.innerHTML = `<header class="bar"><div class="logo">mi mapa<b>.</b></div><button class="kid" data-tab="mapa"><i>${kid().charAt(0).toUpperCase()}</i>${kid()}</button></header>
+    <main>${S.tab==="hoy"?viewHoy():S.tab==="avance"?viewAvance():viewMapa()}</main>
+    <nav class="tabs"><div class="in">${[["hoy","Mi semana"],["avance","Su avance"],["mapa","Sus alimentos"]].map(([t,l])=>`<button data-tab="${t}" class="${S.tab===t?"on":""}">${ICONS[t]}${l}</button>`).join("")}</div></nav>`;
+  root.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;window.scrollTo(0,0);render();});
+  root.querySelectorAll("[data-day]").forEach(b=>b.onclick=()=>{S.sel=+b.dataset.day;render();});
+  root.querySelectorAll("[data-log]").forEach(b=>b.onclick=()=>logMeal(b.dataset.log,b.dataset.v));
+  root.querySelectorAll("[data-chg]").forEach(b=>b.onclick=()=>changeSheet(b.dataset.chg));
+  root.querySelectorAll("[data-how]").forEach(b=>b.onclick=()=>howSheet(b.dataset.how));
+  root.querySelectorAll("[data-food]").forEach(b=>b.onclick=()=>foodSheet(b.dataset.food));
+  const sb=$("#shopBtn"); if(sb) sb.onclick=shopSheet;
+  const as=$("#addSafe"); if(as) as.onclick=addSafeSheet;
+  const rg=$("#regen"); if(rg) rg.onclick=async()=>{ S.week={menu:genMenu(S.profile),log:S.week.log||{},createdAt:Date.now()}; try{await DB.saveWeek(S.user.uid,S.weekId,S.week);}catch(e){} S.tab="hoy"; render(); toast("Menú nuevo listo ✓"); };
+  const lo=$("#logout"); if(lo) lo.onclick=()=>DB.signOut();
+}
+</script>
+</body>
+</html>

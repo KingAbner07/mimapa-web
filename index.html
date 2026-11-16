@@ -615,6 +615,7 @@ const SCREENS = [
 
   /* 18 — RESULTADO */
   { noBar:true, noBack:true, render: renderResult, mount: () => {
+      try { localStorage.setItem("mimapa_quiz", JSON.stringify({...S, angle: ANGLE, savedAt: Date.now()})); } catch(e){}
       track("ViewContent",{content_name:"resultado_quiz"});
       document.querySelectorAll("[data-buy]").forEach(b => b.onclick = buy);
     } },
