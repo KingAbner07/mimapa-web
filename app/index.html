@@ -100,6 +100,23 @@ main{padding:6px 18px 24px}
 .three .t3{background:#F0EBE5;color:var(--muted)}
 .three button.sel{border-color:currentColor}
 .three.answered button:not(.sel){opacity:.35}
+.lbl2{font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.newrow{display:flex;gap:10px;background:var(--terra-soft);border:1.5px dashed var(--terra);border-radius:14px;padding:10px 12px;cursor:pointer;margin-top:4px}
+.newrow .plus{font-size:20px;font-weight:700;color:var(--terra);line-height:1.2}
+.newrow small{display:block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--terra)}
+.newrow b{display:block;font-size:16px;color:#7E3519;margin:2px 0}
+.newrow em{display:block;font-style:normal;font-size:13px;color:#6b4a3c;line-height:1.35}
+.newrow u,.todaynew u{display:inline-block;margin-top:6px;font-size:13px;font-weight:700;color:var(--terra);text-decoration:none}
+.todaynew{display:flex;gap:12px;align-items:flex-start;background:var(--terra);color:#fff;border-radius:18px;padding:14px;margin-bottom:12px;cursor:pointer}
+.todaynew .em{font-size:36px;line-height:1}
+.todaynew small{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;opacity:.85}
+.todaynew b{display:block;font-family:Fraunces,serif;font-size:20px;margin:2px 0 4px}
+.todaynew span{display:block;font-size:13.5px;line-height:1.4;opacity:.95}
+.todaynew u{color:#fff}
+.stats{display:flex;align-items:center;gap:14px;margin:10px 0 6px}
+.stats div{text-align:center}.stats b{display:block;font-family:Fraunces,serif;font-size:34px;font-weight:600;line-height:1}
+.stats small{font-size:12px;font-weight:700;opacity:.85}.stats .arr{font-size:22px;opacity:.7}.stats .now b{color:#F3C9B6}
+.weeknew{margin-top:12px;background:rgba(255,255,255,.12);border-radius:12px;padding:10px 12px}.weeknew span{display:block;font-size:11px;font-weight:800;text-transform:uppercase;opacity:.8}.weeknew b{font-size:14.5px}
 .tip{font-size:13px;color:var(--muted);font-weight:600;margin-top:8px}
 
 /* avance */
@@ -377,14 +394,14 @@ const S = { user:null, profile:null, week:null, weekId:null, weeks:[], tab:"hoy"
 const $ = s => document.querySelector(s);
 const root = $("#root");
 const esc = s => String(s??"").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const kid = () => esc(S.profile?.kidName || "tu peque");
+const kid = () => esc(S.profile?.kidName || (S.profile?.sex==="f"?"tu hija":"tu hijo"));
 const g = (m,f) => S.profile?.sex==="f" ? f : m;
 function toast(t){ const el=$("#toast"); el.textContent=t; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),2400); }
 function mondayOf(d){ const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); const wd=(x.getDay()+6)%7; x.setDate(x.getDate()-wd); return x; }
 const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const todayIdx = () => (new Date().getDay()+6)%7;
 const DN=["L","M","M","J","V","S","D"], DAYS=["Lunes","Martes","Miércoles","Jueves","Viernes","Sábado","Domingo"];
-const SLOTS=[["des","Desayuno"],["com","Comida"],["col","Colación"],["cen","Cena"]];
+const SLOTS=[["des","Desayuno"],["com","Comida"],["col","Colación (snack)"],["cen","Cena"]];
 const NUTS = {fibra:{e:"🌾",n:"Fibra",why:"Digestión, menos estreñimiento"},prot:{e:"💪",n:"Proteína",why:"Crecimiento y fuerza"},hierro:{e:"🩸",n:"Hierro",why:"Energía y concentración"},calcio:{e:"🦴",n:"Calcio",why:"Huesos y dientes"},vitA:{e:"👁️",n:"Vitamina A",why:"Vista, piel y defensas"}};
 const errMsg = e => ({ "auth/email-already-in-use":"Ese correo ya tiene cuenta. Toca “Ya tengo cuenta”.", "auth/invalid-email":"El correo no es válido.", "auth/weak-password":"La contraseña debe tener al menos 6 caracteres.", "auth/invalid-credential":"Correo o contraseña incorrectos.", "auth/wrong-password":"Correo o contraseña incorrectos.", "auth/user-not-found":"No encontramos una cuenta con ese correo.", "auth/too-many-requests":"Demasiados intentos. Espera unos minutos.", "auth/network-request-failed":"Sin conexión. Revisa tu internet." }[e?.code] || "Algo salió mal. Intenta de nuevo.");
 
@@ -423,7 +440,7 @@ function genMenu(p){
     if (bridges.length){
       const b = bridges[Math.floor(((d - startDay + 7) % 7)/2)%bridges.length];   // cada puente 2 días seguidos, empezando hoy
       const sl = ALL[b.id].slots.find(x=>x!=="col") || "com";
-      day[sl] = [day[sl][0], b.id].filter(Boolean);
+      day[sl] = [...day[sl], b.id];
     }
     menu[d] = day;
   }
@@ -460,7 +477,7 @@ DB.onAuth(async user => {
 async function loadWeek(){
   S.weekId = ymd(mondayOf(new Date()));
   let w = await DB.getWeek(S.user.uid, S.weekId);
-  if (!w){ w = {menu: genMenu(S.profile), log:{}, createdAt: Date.now()}; await DB.saveWeek(S.user.uid, S.weekId, w); }
+  if (!w || w.v!==2){ w = {menu: genMenu(S.profile), log:w?.log||{}, createdAt: w?.createdAt||Date.now(), v:2}; await DB.saveWeek(S.user.uid, S.weekId, w); }
   S.week = w; S.sel = todayIdx();
   S.weeks = await DB.listWeeks(S.user.uid);
 }
@@ -515,11 +532,11 @@ function startOnboarding(){
 }
 const OB_STEPS = 4;
 function viewOnboarding(){
-  const o=S.ob, pct=Math.round(o.step/OB_STEPS*100), nm=esc(o.name||"tu peque");
+  const o=S.ob, pct=Math.round(o.step/OB_STEPS*100), nm=esc(o.name||"tu hijo");
   const head = `<div class="logo" style="margin:4px 0 10px">mi mapa<b>.</b></div><div class="prog"><i style="width:${pct}%"></i></div>`;
   if(o.step===0) return `<div class="screen">${head}
     ${o.fromQuiz?`<div class="ok">✓ Usamos tus respuestas del test. Solo confirma.</div>`:""}
-    <div class="eyebrow">Paso 1 de 4</div><h1 style="font-size:26px">¿Cómo se llama tu peque?</h1>
+    <div class="eyebrow">Paso 1 de 4</div><h1 style="font-size:26px">¿Cómo se llama tu hijo o tu hija?</h1>
     <input class="input" id="nm" style="margin-top:14px" maxlength="20" placeholder="Su nombre" value="${esc(o.name)}">
     <div class="opts" style="grid-template-columns:1fr 1fr">
       <button class="opt ${o.sex==="m"?"sel":""}" data-sex="m"><span class="em">👦</span>Niño</button>
@@ -556,6 +573,7 @@ async function finishOnboarding(){
 /* ---------- Mi semana ---------- */
 function ring(p,size=62){const r=size/2-6,c=2*Math.PI*r;return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="flex:none"><circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="#EEE7DE" stroke-width="7" fill="none"/><circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="var(--brand)" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p)}" transform="rotate(-90 ${size/2} ${size/2})"/><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-family="Fraunces" font-weight="600" font-size="14" fill="#1F2421">${Math.round(p*100)}%</text></svg>`}
 const item = id => { const f=ALL[id]; if(!f) return ""; const isNew=!!f.bridge && status(id)!=="ok"; return `<span class="it ${isNew?"new":""}" ${f.bridge?`data-how="${id}"`:""}>${f.e} ${esc(f.n)}${isNew?" <small>nuevo</small>":""}</span>`; };
+const isNewHere = id => !!ALL[id]?.bridge && !(S.profile?.initialSafe||[]).includes(id);
 function viewHoy(){
   const w=S.week, d=S.sel, logged=Object.values(w.log||{}).reduce((s,x)=>s+Object.keys(x).length,0);
   const mon=mondayOf(new Date()); const dayNum=i=>{const x=new Date(mon);x.setDate(x.getDate()+i);return x.getDate();};
@@ -566,15 +584,21 @@ function viewHoy(){
     <div class="card"><div class="weekhead">${ring(logged/28)}<div><b>${logged} de 28 comidas marcadas</b><div class="lead">Cada lunes llega un menú nuevo, según lo que ${kid()} aceptó.</div></div></div>
       <button class="shop" id="shopBtn">🛒 Lista de compras de la semana</button></div>
     <div class="days">${DN.map((l,i)=>`<button class="day ${i===d?"sel":""} ${i===todayIdx()?"today":""} ${st(i)}" data-day="${i}">${l}<b>${dayNum(i)}</b><i></i></button>`).join("")}</div>
-    <div class="dayttl"><h2>${d===todayIdx()?"Hoy, "+DAYS[d].toLowerCase():DAYS[d]}</h2><span>${hasNew?"1 alimento nuevo":"Sin novedades"}</span></div>
-    ${SLOTS.map(([sl,label])=>{ const plate=w.menu[d][sl]||[], v=w.log?.[d]?.[sl], nw=plate.some(id=>ALL[id]?.bridge&&status(id)!=="ok");
-      return `<div class="meal ${nw?"has-new":""}"><div class="mtop"><span class="mname">${label}</span>${v?"":`<button class="chg" data-chg="${sl}">↻ cambiar</button>`}</div>
-        <div class="plate">${plate.map(item).join("")}</div>
+    ${(()=>{ const nm=SLOTS.find(([sl])=>(w.menu[d][sl]||[]).some(id=>isNewHere(id))); if(!nm) return `<div class="dayttl"><h2>${d===todayIdx()?"Hoy, "+DAYS[d].toLowerCase():DAYS[d]}</h2><span>Día de repaso</span></div>`;
+      const nid=w.menu[d][nm[0]].find(id=>isNewHere(id));
+      return `<div class="dayttl"><h2>${d===todayIdx()?"Hoy, "+DAYS[d].toLowerCase():DAYS[d]}</h2></div>
+      <div class="todaynew" data-how="${nid}"><div class="em">${ALL[nid].e}</div><div><small>${status(nid)==="ok"?"Reto del día · ¡lo aceptó! ✅":"El reto del día"}</small><b>${esc(ALL[nid].n)}</b><span>Va en ${nm[1].replace(/ \(.*/,"").toLowerCase()==="comida"?"la comida":"el "+nm[1].replace(/ \(.*/,"").toLowerCase()}, junto a lo que ya come. Las demás comidas son lo de siempre: así no hay presión.</span><u>Ver cómo prepararlo →</u></div></div>`; })()}
+    ${SLOTS.map(([sl,label])=>{ const plate=w.menu[d][sl]||[], v=w.log?.[d]?.[sl];
+      const usual=plate.filter(id=>!(isNewHere(id))), nw=plate.find(id=>isNewHere(id));
+      return `<div class="meal ${nw?"has-new":""}"><div class="mtop"><span class="mname">${label}</span>${v?"":`<button class="chg" data-chg="${sl}">↻ otra opción</button>`}</div>
+        <div class="lbl2">${nw?"Lo de siempre":"Lo que ya come"}</div>
+        <div class="plate">${usual.map(item).join("")}</div>
+        ${nw?`<div class="newrow" data-how="${nw}"><span class="plus">＋</span><div><small>${status(nw)==="ok"?"Nuevo · ¡ya lo aceptó! ✅":"Nuevo para probar"}</small><b>${ALL[nw].e} ${esc(ALL[nw].n)}</b><em>Sírvelo en el mismo plato, en poquita cantidad. Con que lo toque, huela o pruebe 1 bocado ya cuenta.</em><u>Cómo prepararlo →</u></div></div>`:""}
+        <div class="lbl2" style="margin-top:10px">${nw?`¿Cuánto comió de lo nuevo?`:`¿Cómo le fue?`}</div>
         <div class="three ${v?"answered":""}">
           <button class="t1 ${v==="full"?"sel":""}" data-log="${sl}" data-v="full">😋 Todo</button>
           <button class="t2 ${v==="part"?"sel":""}" data-log="${sl}" data-v="part">🤏 Un poco</button>
-          <button class="t3 ${v==="none"?"sel":""}" data-log="${sl}" data-v="none">🙅 Nada</button></div>
-        ${nw&&!v?`<div class="tip">Toca el alimento nuevo para ver cómo prepararlo</div>`:""}</div>`; }).join("")}
+          <button class="t3 ${v==="none"?"sel":""}" data-log="${sl}" data-v="none">🙅 Nada</button></div></div>`; }).join("")}
   </section>`;
 }
 async function logMeal(sl,v){
@@ -592,22 +616,23 @@ async function logMeal(sl,v){
 function viewAvance(){
   const cur=weekTotals(S.week), base=baseline(S.profile);
   const ws=S.weeks.some(w=>w.id===S.weekId)?S.weeks.map(w=>w.id===S.weekId?{...S.week,id:w.id}:w):[...S.weeks,{...S.week,id:S.weekId}];
-  const hist=ws.map(w=>weekTotals(w).eaten.length);
-  const enough=cur.meals>=3;
+    const enough=cur.meals>=3;
   const startCount=(S.profile.initialSafe||[]).length;
-  const series=[startCount,...hist]; const max=Math.max(...series,1)+2;
+  const okNow=Object.values(S.profile.status).filter(x=>x==="ok").length, tryNow=Object.values(S.profile.status).filter(x=>x==="try").length;
+  const wkNew=[...new Set(Object.values(S.week.menu).flatMap(day=>Object.values(day).flat()).filter(id=>ALL[id]?.bridge))];
+  const newThisWeek=wkNew.length, triedThisWeek=wkNew.filter(id=>status(id)!=="no").length;
   const rows=Object.keys(NUTS).map(k=>{ const c=cur.meals?cur.t[k]/cur.meals:0, b=base[k]; return {k,c,b,d:b?Math.round((c-b)/b*100):(c>0?null:0)}; }).sort((a,b)=>(b.d??999)-(a.d??999));
   const maxC=Math.max(...rows.map(r=>r.c),.01);
   const wins=BRIDGES.filter(b=>status(b.id)==="ok").map(b=>({b,from:b.from.find(id=>(S.profile.initialSafe||[]).includes(id))})).filter(x=>x.from);
   return `<section class="screen">
     <div class="hello"><small>Semana ${S.weeks.length||1}</small><h1>El avance de ${kid()}</h1></div>
-    <div class="card hero"><div class="eyebrow">Variedad en su plato</div>
-      <h2>${startCount} alimentos al empezar · ${Object.values(S.profile.status).filter(x=>x==="ok").length} hoy</h2>
-      <p>Alimentos distintos que comió cada semana. La barra clara es esta semana.</p>
-      <div class="bars">${series.map((r,i)=>`<div class="${i===series.length-1?"now":""}"><b>${r}</b><span style="height:${Math.round(r/max*100)}%"></span><small>${i===0?"Inicio":(i===series.length-1?"Esta sem.":"Sem "+i)}</small></div>`).join("")}</div></div>
-    <div class="card"><h2>Nutrientes en su plato</h2><p class="lead">${enough?`Promedio por comida esta semana, comparado con su punto de partida.`:`Marca al menos 3 comidas en “Mi semana” y aquí verás cómo mejora su plato.`}</p>
+    <div class="card hero"><div class="eyebrow">Alimentos que acepta</div>
+      <div class="stats"><div><b>${startCount}</b><small>Al empezar</small></div><div class="arr">→</div><div class="now"><b>${okNow}</b><small>Hoy</small></div>${tryNow?`<div><b>${tryNow}</b><small>Probando</small></div>`:""}</div>
+      <p>${okNow>startCount?`¡${kid()} ya acepta ${okNow-startCount} alimento${okNow-startCount>1?"s":""} más que al empezar! 🎉`:`Este número sube cada vez que marcas <b>“Todo”</b> en un alimento nuevo. Si marcas “Un poco”, queda como <b>probando</b> y vuelve a aparecer.`}</p>
+      <div class="weeknew"><span>Esta semana</span><b>${newThisWeek} alimento${newThisWeek===1?"":"s"} nuevo${newThisWeek===1?"":"s"} en su menú · ${triedThisWeek} ya probado${triedThisWeek===1?"":"s"}</b></div></div>
+    <div class="card"><h2>¿Su plato está mejorando?</h2><p class="lead">${enough?`Comparamos <b>lo que marcaste que comió</b> esta semana con lo que comía antes de empezar (solo sus alimentos de siempre). Se actualiza cada vez que marcas Todo, Un poco o Nada.`:`Marca al menos 3 comidas en “Mi semana” (Todo, Un poco o Nada) y aquí verás si su plato tiene más hierro, fibra, proteína… que antes de empezar.`}</p>
       <div class="nutri">${rows.map(r=>`<div class="nrow"><div class="ic">${NUTS[r.k].e}</div><div><b>${NUTS[r.k].n}</b><small>${NUTS[r.k].why}</small><div class="track"><i style="width:${Math.round(r.c/maxC*100)}%"></i></div></div>
-        <div class="delta ${!enough||r.d===0?"flat":""}">${!enough?"–":r.d===null?"¡Nuevo!":r.d>0?"↑ "+r.d+"%":r.d===0?"=":"↓ "+Math.abs(r.d)+"%"}</div></div>`).join("")}</div></div>
+        <div class="delta ${!enough||r.d===0?"flat":""}">${!enough?"–":r.d===null?"¡Nuevo!":r.d>0?"↑ "+r.d+"% más":r.d===0?"=":"↓ "+Math.abs(r.d)+"% menos"}</div></div>`).join("")}</div></div>
     <div class="card"><h2>Cambios que lograste</h2><p class="lead" style="margin-bottom:6px">Lo que antes comía → lo que ahora también acepta.</p>
       ${wins.length?wins.map(x=>`<div class="swap"><div class="f from"><span>${ALL[x.from].e}</span>${esc(ALL[x.from].n)}</div><div class="arrow">→</div><div class="f"><span>${x.b.e}</span>${esc(ALL[x.b.id].n)}</div><div class="gain">+ ${(x.b.nut||[]).filter(n=>NUTS[n]).map(n=>NUTS[n].n).slice(0,2).join(", ")||"variedad"}</div></div>`).join(""):`<p class="empty">Aquí aparecerá cada alimento nuevo que ${kid()} acepte. ¡El primero puede ser esta semana!</p>`}</div>
     <p class="note">Valores estimados según lo que marcas en la app. Es una guía para acompañar, no un diagnóstico. Ante dudas, consulta a su pediatra o nutriólogo.</p>
@@ -653,9 +678,10 @@ function changeSheet(sl){
   const safe=Object.keys(S.profile.status).filter(id=>S.profile.status[id]==="ok"&&ALL[id]);
   const pool=safe.filter(id=>ALL[id].slots.includes(sl)); const src=pool.length?pool:safe;
   const opts=[]; for(let i=0;i<Math.min(4,src.length);i++){ opts.push([src[i], src[(i+1)%src.length]].filter((v,j,a)=>a.indexOf(v)===j)); }
-  openSheet(`<h3>Cambiar ${SLOTS.find(s=>s[0]===sl)[1].toLowerCase()}</h3><p class="lead">Opciones con alimentos que ya come.</p>
+  const keep=(S.week.menu[S.sel][sl]||[]).filter(id=>ALL[id]?.bridge&&status(id)!=="ok");
+  openSheet(`<h3>Otra opción para ${SLOTS.find(s=>s[0]===sl)[1].replace(/ \(.*/,"").toLowerCase()}</h3><p class="lead">¿No tienes esto en casa o hoy no se le antoja? Elige otra combinación de lo que ya come.${keep.length?` <b>El alimento nuevo (${esc(ALL[keep[0]].n)}) se queda.</b>`:""}</p>
     <div class="alts">${opts.map((p,i)=>`<button data-alt="${i}">${p.map(id=>`<span class="it">${ALL[id].e} ${esc(ALL[id].n)}</span>`).join("")}</button>`).join("")}</div>`);
-  document.querySelectorAll("[data-alt]").forEach(b=>b.onclick=async()=>{ S.week.menu[S.sel][sl]=opts[+b.dataset.alt]; closeSheet(); render(); toast("Menú actualizado ✓"); try{await DB.saveWeek(S.user.uid,S.weekId,S.week);}catch(e){} });
+  document.querySelectorAll("[data-alt]").forEach(b=>b.onclick=async()=>{ S.week.menu[S.sel][sl]=[...opts[+b.dataset.alt],...keep]; closeSheet(); render(); toast("Menú actualizado ✓"); try{await DB.saveWeek(S.user.uid,S.weekId,S.week);}catch(e){} });
 }
 function shopSheet(){
   const set=new Set(); Object.values(S.week.menu).forEach(day=>Object.values(day).flat().forEach(id=>(ALL[id]?.shop||[]).forEach(x=>set.add(x))));
@@ -704,7 +730,7 @@ function render(){
   root.querySelectorAll("[data-food]").forEach(b=>b.onclick=()=>foodSheet(b.dataset.food));
   const sb=$("#shopBtn"); if(sb) sb.onclick=shopSheet;
   const as=$("#addSafe"); if(as) as.onclick=addSafeSheet;
-  const rg=$("#regen"); if(rg) rg.onclick=async()=>{ S.week={menu:genMenu(S.profile),log:S.week.log||{},createdAt:Date.now()}; try{await DB.saveWeek(S.user.uid,S.weekId,S.week);}catch(e){} S.tab="hoy"; render(); toast("Menú nuevo listo ✓"); };
+  const rg=$("#regen"); if(rg) rg.onclick=async()=>{ S.week={v:2,menu:genMenu(S.profile),log:S.week.log||{},createdAt:Date.now()}; try{await DB.saveWeek(S.user.uid,S.weekId,S.week);}catch(e){} S.tab="hoy"; render(); toast("Menú nuevo listo ✓"); };
   const lo=$("#logout"); if(lo) lo.onclick=()=>DB.signOut();
 }
 </script>

@@ -419,8 +419,8 @@ const SCREENS = [
   { render: () => `
     <section class="screen">
       <div class="eyebrow">Empecemos</div>
-      <h2 class="q">¿Cómo se llama tu peque?</h2>
-      <p class="sub">Usaremos su nombre para armar un resultado hecho para ${S.sex==="f"?"ella":"él"}.</p>
+      <h2 class="q">¿Cómo se llama tu hijo o tu hija?</h2>
+      <p class="sub">Usaremos su nombre para armar un resultado personalizado.</p>
       <input class="input" id="name" maxlength="20" placeholder="Su nombre" value="${esc(S.name)}" autocomplete="off">
       <div class="gender">
         <button class="opt ${S.sex==="m"?"sel":""}" data-sex="m"><span class="em">👦</span>Niño</button>
@@ -800,8 +800,8 @@ function renderResult(){
     </div>
 
     <h3 style="font-size:22px;margin:28px 0 12px">Preguntas frecuentes</h3>
-    <details><summary>¿Es una dieta?</summary><p>No. mi mapa. es una herramienta para organizar la alimentación y ampliar el repertorio de tu hijo respetando sus preferencias. No es un plan para bajar de peso ni un tratamiento médico, y no sustituye a su pediatra o nutriólogo.</p></details>
-    <details><summary>¿Sirve si mi hijo está en el espectro autista?</summary><p>Sí. El método parte de lo que tu hijo ya acepta y avanza por texturas, colores y formas parecidas, lo que respeta su perfil sensorial. Si tiene terapeutas, puedes compartir con ellos su mapa y su avance.</p></details>
+    <details><summary>¿Es una dieta?</summary><p>No. mi mapa. es una herramienta para organizar la alimentación y ampliar el repertorio de ${N()} respetando sus preferencias. No es un plan para bajar de peso ni un tratamiento médico, y no sustituye a su pediatra o nutriólogo.</p></details>
+    <details><summary>¿Sirve si mi hijo está en el espectro autista?</summary><p>Sí. El método parte de lo que ${N()} ya acepta y avanza por texturas, colores y formas parecidas, lo que respeta su perfil sensorial. Si tiene terapeutas, puedes compartir con ellos su mapa y su avance.</p></details>
     <details><summary>¿Y si mi hijo lo rechaza todo?</summary><p>Es normal al principio. Por eso cada paso es pequeño y siempre va junto a sus alimentos de siempre. Marcas lo que pasó y el plan propone el siguiente paso.</p></details>
     <details><summary>¿Necesito ingredientes caros o especiales?</summary><p>No. Las recetas usan ingredientes que encuentras en cualquier mercado, tianguis o súper.</p></details>
     <details><summary>¿Puedo cancelar cuando quiera?</summary><p>Sí. Sin plazos forzosos, y con ${CONFIG.guaranteeDays} días de garantía total.</p></details>
