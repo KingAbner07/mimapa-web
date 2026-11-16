@@ -206,7 +206,7 @@ nav.tabs button.on{color:var(--brand)}
    ========================================================= */
 const CONFIG = {
   requireSubscription: false,  // true = solo entra quien tiene suscripción activa (activar cuando el webhook de Hotmart esté listo)
-  checkoutUrl: "https://pay.hotmart.com/SEU-LINK-AQUI",
+  checkoutUrl: "https://pay.hotmart.com/S108509891C?off=02p6weyq",
   quizUrl: "/",
   firebaseVersion: "10.12.2",
 };
@@ -518,7 +518,7 @@ function viewPaywall(){
   return `<div class="auth screen"><div class="logo">mi mapa<b>.</b></div>
     <h1>Tu plan aún no está activo</h1>
     <p class="lead">No encontramos una suscripción activa para <b>${esc(S.user?.email)}</b>. Si ya pagaste, usa en la app el <b>mismo correo de la compra</b>. La activación puede tardar unos minutos.</p>
-    <a class="btn terra" href="${CONFIG.checkoutUrl}" style="text-decoration:none">Activar mi plan</a>
+    <a class="btn terra" href="${CONFIG.checkoutUrl}&sck=app_paywall&email=${encodeURIComponent(S.user?.email||"")}" style="text-decoration:none">Activar mi plan</a>
     <button class="btn ghost" id="retry">Ya pagué, revisar de nuevo</button>
     <p class="center" style="margin-top:16px"><button class="link" id="out">Usar otro correo</button></p></div>`;
 }
