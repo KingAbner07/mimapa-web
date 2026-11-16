@@ -3,243 +3,232 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>mi mapa. — Descubre el perfil alimentario de tu hijo</title>
-<meta name="description" content="En 2 minutos: el perfil sensorial de tu hijo, lo que falta en su plato y los primeros alimentos que podría aceptar.">
-<meta name="theme-color" content="#FFF6EA">
+<title>mi mapa. — Test de alimentación selectiva</title>
+<meta name="description" content="En 2 minutos: por qué tu hijo rechaza lo que rechaza, qué nutrientes le pueden faltar y los 3 primeros alimentos que tiene más probabilidad de aceptar.">
+<meta name="theme-color" content="#F6F1EA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
 <style>
 /* =========================================================
-   mi mapa. — Quiz v2 (México · estilo Lotería)
-   Configuración rápida → bloque CONFIG en el <script>
+   mi mapa. — Quiz v3 · dirección "cálida y profesional"
+   Configuración → bloque CONFIG dentro del script
    ========================================================= */
 :root{
-  --bg:#FFF6EA; --surface:#FFFFFF; --ink:#2A1A16; --muted:#6B5A53;
-  --rosa:#D6246E; --rosa-soft:#FCE3EE;
-  --azul:#1F3F8F; --azul-soft:#E2E9F8;
-  --naranja:#EE7B22; --naranja-soft:#FDE8D6;
-  --amarillo:#F5BE2E; --amarillo-soft:#FDF2D2;
-  --verde:#2E8B5A; --verde-soft:#DDF1E5;
-  --line:#EADCC8; --radius:20px;
-  --shadow:0 12px 30px -14px rgba(42,26,22,.25);
+  --bg:#F6F1EA; --surface:#FFFFFF; --ink:#1F2421; --muted:#68625C; --line:#E7DED2;
+  --brand:#1E4D45; --brand-2:#2B6A5F; --brand-soft:#E4EEEA;
+  --terra:#B9532D; --terra-soft:#F6E5DB;
+  --gold:#C99332; --gold-soft:#F7EEDB;
+  --alert:#A3402A; --alert-soft:#F8E6E0;
+  --radius:18px; --shadow:0 1px 2px rgba(31,36,33,.04), 0 12px 32px -16px rgba(31,36,33,.22);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg);color:var(--ink)}
-body{font-family:Nunito,system-ui,sans-serif;font-size:17px;line-height:1.5;min-height:100dvh;-webkit-font-smoothing:antialiased;
-  background-image:radial-gradient(circle at 1px 1px, rgba(42,26,22,.05) 1px, transparent 0);background-size:22px 22px}
-h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:800;line-height:1.12;letter-spacing:-.01em}
+body{font-family:"DM Sans",system-ui,sans-serif;font-size:17px;line-height:1.55;min-height:100dvh;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.15;letter-spacing:-.015em}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
-.wrap{max-width:560px;margin:0 auto;padding:14px 16px 44px}
-.slab{font-family:"Alfa Slab One",Georgia,serif;font-weight:400;letter-spacing:.02em}
-
-/* franja superior tipo talavera */
-.stripe{height:6px;background:repeating-linear-gradient(90deg,var(--rosa) 0 28px,var(--naranja) 28px 56px,var(--amarillo) 56px 84px,var(--azul) 84px 112px,var(--verde) 112px 140px)}
+.wrap{max-width:560px;margin:0 auto;padding:12px 18px 44px}
 
 /* top bar */
-.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px)}
-.top-in{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:10px 16px}
-.logo{font-family:Fraunces,serif;font-weight:800;font-size:21px;color:var(--azul)}
-.logo b{color:var(--rosa)}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid transparent}
+.top-in{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:12px 18px}
+.logo{font-family:Fraunces,serif;font-weight:700;font-size:21px;color:var(--brand);letter-spacing:-.02em}
+.logo b{color:var(--terra)}
 .back{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--muted);visibility:hidden}
 .back.show{visibility:visible}
-.back:hover{background:var(--azul-soft)}
-.bar{flex:1;height:9px;background:var(--line);border-radius:99px;overflow:hidden}
-.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--azul),var(--rosa),var(--naranja));border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.back:hover{background:var(--brand-soft)}
+.bar{flex:1;height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--brand);border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
 .top.hidebar .bar,.top.hidebar .back{opacity:0}
 
-/* screens */
-.screen{animation:in .45s cubic-bezier(.2,.8,.2,1) both}
-@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.eyebrow{font-size:13px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:var(--rosa);margin-bottom:10px}
+.screen{animation:in .4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:10px}
 .q{font-size:clamp(25px,6.4vw,31px);margin-bottom:10px}
 .sub{color:var(--muted);margin-bottom:22px}
+
+/* options */
 .opts{display:grid;gap:10px}
-.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:15px 16px;font-weight:800;transition:transform .12s,border-color .15s,background .15s}
-.opt:hover{border-color:var(--azul)}
-.opt:active{transform:scale(.985)}
-.opt .em{font-size:26px;width:34px;text-align:center;flex:none}
-.opt small{display:block;font-weight:600;color:var(--muted);font-size:14px}
-.opt.sel{border-color:var(--azul);background:var(--azul-soft)}
-.opt .ck{margin-left:auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;transition:.15s}
-.opt.sel .ck{background:var(--azul);border-color:var(--azul)}
-.opt.sel .ck::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:15px 16px;font-weight:600;transition:border-color .15s,background .15s,transform .1s}
+.opt:hover{border-color:var(--brand-2)}
+.opt:active{transform:scale(.99)}
+.opt .em{font-size:22px;width:40px;height:40px;border-radius:12px;background:var(--bg);display:grid;place-items:center;flex:none}
+.opt small{display:block;font-weight:500;color:var(--muted);font-size:14px}
+.opt.sel{border-color:var(--brand);background:var(--brand-soft)}
+.opt .ck{margin-left:auto;width:22px;height:22px;border-radius:6px;border:1.5px solid #CFC5B8;flex:none;display:grid;place-items:center;transition:.15s}
+.opt.sel .ck{background:var(--brand);border-color:var(--brand)}
+.opt.sel .ck::after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
 
-/* ===== Cartas de Lotería ===== */
-.deck{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media (min-width:480px){.deck{grid-template-columns:repeat(4,1fr)}}
-.lcard{position:relative;background:#fff;border:2.5px solid var(--ink);border-radius:10px;padding:4px;box-shadow:3px 3px 0 var(--ink);transition:transform .15s, box-shadow .15s;text-align:center}
-.lcard .in{border:1.5px solid var(--ink);border-radius:6px;padding:16px 2px 5px;position:relative;min-height:112px;display:flex;flex-direction:column;justify-content:space-between}
-.lcard .num{position:absolute;top:3px;left:5px;font-family:"Alfa Slab One",serif;font-size:12px;line-height:1}
-.lcard .em{font-size:38px;line-height:1.1;transition:transform .2s}
-.lcard .nm{font-family:"Alfa Slab One",serif;font-size:11.5px;line-height:1.15;text-transform:uppercase;letter-spacing:.02em;padding:0 2px}
-.lcard.c0 .in{background:var(--rosa-soft)} .lcard.c1 .in{background:var(--amarillo-soft)} .lcard.c2 .in{background:var(--azul-soft)}
-.lcard.c3 .in{background:var(--naranja-soft)} .lcard.c4 .in{background:var(--verde-soft)}
-.lcard.sel{transform:translateY(-4px) rotate(-1.5deg);box-shadow:4px 6px 0 var(--rosa);border-color:var(--rosa)}
-.lcard.sel .em{transform:scale(1.12)}
-.lcard.sel::after{content:"✓";position:absolute;top:-9px;right:-9px;width:26px;height:26px;border-radius:50%;background:var(--rosa);color:#fff;font-weight:900;font-size:15px;display:grid;place-items:center;border:2px solid #fff}
-.counter{text-align:center;color:var(--muted);font-weight:800;margin:18px 0 4px}
-.counter b{color:var(--rosa)}
+/* food grid */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media (min-width:480px){.grid{grid-template-columns:repeat(4,1fr)}}
+.food{position:relative;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px 4px 10px;text-align:center;font-weight:600;font-size:13.5px;line-height:1.2;transition:.15s}
+.food .em{display:block;font-size:26px;margin-bottom:6px}
+.food.sel{border-color:var(--brand);background:var(--brand-soft)}
+.food.sel::after{content:"";position:absolute;top:7px;right:7px;width:16px;height:16px;border-radius:50%;background:var(--brand) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/11px no-repeat}
+.counter{text-align:center;color:var(--muted);font-weight:600;margin:16px 0 4px}
+.counter b{color:var(--brand)}
 
-/* hero */
-.fan{display:flex;justify-content:center;align-items:flex-end;gap:0;margin:8px 0 6px;height:150px}
-.fan .lcard{width:96px;margin:0 -3px}
-.fan .lcard .in{min-height:118px}
-.fan .lcard:nth-child(1){transform:rotate(-10deg) translateY(10px)}
-.fan .lcard:nth-child(2){transform:rotate(0deg);z-index:2}
-.fan .lcard:nth-child(3){transform:rotate(10deg) translateY(10px)}
-.hero-art{background:var(--surface);border-radius:26px;padding:18px 14px 20px;box-shadow:var(--shadow);margin:6px 0 22px;border:2px solid var(--line)}
-.arrow-row{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:900;color:var(--muted);font-size:14px;margin-top:12px}
-.pill{background:var(--azul-soft);color:var(--azul);padding:6px 12px;border-radius:99px;font-weight:900;font-size:13.5px}
-.pill.o{background:var(--rosa-soft);color:var(--rosa)}
-.minis{display:flex;justify-content:center;gap:8px;margin-top:12px}
-.minis .lcard{width:66px;box-shadow:2px 2px 0 var(--ink)}
-.minis .lcard .in{min-height:76px;padding-top:12px}
-.minis .lcard .em{font-size:24px}
-.minis .lcard .nm{font-size:8.5px}
-.minis .lcard .num{font-size:9px}
-.hero h1{font-size:clamp(30px,8vw,40px);margin-bottom:12px}
-.hero h1 em{font-style:normal;color:var(--rosa)}
-.bullets{list-style:none;display:grid;gap:10px;margin:16px 0 4px}
-.bullets li{display:flex;gap:10px;font-weight:700}
-.bullets li::before{content:"";flex:none;width:22px;height:22px;border-radius:50%;background:var(--rosa-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%23D6246E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat;margin-top:2px}
+.input{width:100%;font:inherit;font-size:19px;font-weight:600;padding:16px 18px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);outline:none}
+.input:focus{border-color:var(--brand)}
+.gender{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 
 /* CTA */
-.input{width:100%;font:inherit;font-size:20px;font-weight:800;padding:16px 18px;border:2px solid var(--line);border-radius:16px;background:var(--surface);color:var(--ink);outline:none}
-.input:focus{border-color:var(--azul)}
-.gender{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--azul);color:#fff;font-weight:900;font-size:18px;padding:18px 20px;border-radius:16px;margin-top:22px;box-shadow:0 5px 0 #142a61;transition:transform .1s,box-shadow .1s,opacity .2s}
-.cta:active{transform:translateY(3px);box-shadow:0 2px 0 #142a61}
-.cta[disabled]{opacity:.4;pointer-events:none}
-.cta.rosa{background:var(--rosa);box-shadow:0 5px 0 #9c1450}
-.cta.rosa:active{box-shadow:0 2px 0 #9c1450}
-.cta.pulse{animation:pulse 2.2s infinite}
-@keyframes pulse{0%,100%{filter:none}50%{filter:brightness(1.08)}}
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--brand);color:#fff;font-weight:700;font-size:17.5px;padding:18px 20px;border-radius:14px;margin-top:22px;transition:transform .1s,opacity .2s,background .2s}
+.cta:hover{background:#173E37}
+.cta:active{transform:scale(.99)}
+.cta[disabled]{opacity:.35;pointer-events:none}
+.cta.terra{background:var(--terra)}
+.cta.terra:hover{background:#9E4525}
 .sticky-cta{position:sticky;bottom:12px;z-index:4}
-.fine{font-size:13px;color:var(--muted);text-align:center;margin-top:12px}
+.fine{font-size:13.5px;color:var(--muted);text-align:center;margin-top:12px}
 
-/* insight / recompensa */
-.insight{background:var(--surface);border-radius:var(--radius);padding:24px 22px;box-shadow:var(--shadow);border:2px solid var(--line);position:relative;overflow:hidden}
-.insight::before{content:"";position:absolute;inset:0 0 auto 0;height:7px;background:repeating-linear-gradient(90deg,var(--rosa) 0 24px,var(--naranja) 24px 48px,var(--amarillo) 48px 72px,var(--azul) 72px 96px)}
-.insight .big{font-size:50px;margin-bottom:8px}
-.insight h2{font-size:26px;margin-bottom:10px}
-.insight p{color:var(--muted);margin-bottom:10px}
-.insight p strong{color:var(--ink)}
-.insight.alert{background:linear-gradient(180deg,#fff,var(--naranja-soft))}
-.badge-new{display:inline-flex;align-items:center;gap:6px;background:var(--amarillo);color:#4d3600;font-weight:900;font-size:13px;padding:5px 11px;border-radius:99px;margin:6px 0 12px;animation:pop .5s .15s both}
-@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
-.nutrows{display:grid;gap:8px;margin:14px 0 12px}
-.nutrows div{display:flex;gap:10px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:700;font-size:15px}
-.nutrows div span{font-size:22px}
+/* hero */
+.hero h1{font-size:clamp(30px,8vw,40px);margin:4px 0 14px}
+.hero h1 em{font-style:italic;color:var(--terra)}
+.hero .sub{font-size:17.5px;margin-bottom:18px}
+.preview{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow);margin:6px 0 20px}
+.preview .row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.preview .row:last-of-type{border:0}
+.preview .lbl{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.chip{display:inline-flex;align-items:center;gap:5px;background:var(--bg);border-radius:99px;padding:5px 10px;font-size:14px;font-weight:600}
+.chip.new{background:var(--brand-soft);color:var(--brand)}
+.meter{margin-top:12px}
+.meter .t{display:flex;justify-content:space-between;font-size:13.5px;color:var(--muted);font-weight:600;margin-bottom:6px}
+.meter .b{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.meter .b i{display:block;height:100%;width:72%;background:linear-gradient(90deg,var(--brand-2),var(--brand));border-radius:99px;animation:grow 1.6s .3s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{width:18%}}
+.checks{list-style:none;display:grid;gap:10px;margin:4px 0 6px}
+.checks li{display:flex;gap:10px;font-weight:500}
+.checks li::before{content:"";flex:none;width:20px;height:20px;border-radius:50%;background:var(--brand-soft) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='%231E4D45' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;margin-top:3px}
+.method{display:flex;gap:12px;align-items:flex-start;background:var(--gold-soft);border-radius:14px;padding:14px;margin-top:18px;font-size:14.5px;color:#5E4A20}
+.method b{color:#4A3A16}
+.method .ic{font-size:20px;line-height:1.2}
+
+/* insight */
+.insight{background:var(--surface);border-radius:20px;padding:26px 22px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.insight .tag{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);background:var(--brand-soft);padding:5px 10px;border-radius:99px;margin-bottom:14px}
+.insight .tag.alert{color:var(--alert);background:var(--alert-soft)}
+.insight .tag.gold{color:#7A5A12;background:var(--gold-soft)}
+.insight h2{font-size:26px;margin-bottom:12px}
+.insight p{color:var(--muted);margin-bottom:12px}
+.insight p strong{color:var(--ink);font-weight:600}
+.nutrows{display:grid;gap:8px;margin:14px 0}
+.nutrows div{display:flex;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:15px}
+.nutrows div span{font-size:20px}
+.nutrows b{font-weight:700}
+.quote{border-left:3px solid var(--terra);padding:4px 0 4px 14px;margin:14px 0;font-family:Fraunces,serif;font-size:19px;color:var(--ink);font-style:italic}
+.dream{list-style:none;display:grid;gap:12px;margin:16px 0 6px}
+.dream li{display:flex;gap:12px;align-items:flex-start;font-weight:500;color:var(--ink)}
+.dream li span{flex:none;width:30px;height:30px;border-radius:50%;background:var(--brand-soft);display:grid;place-items:center;font-size:15px}
 
 /* loading */
 .loading{text-align:center;padding-top:16px}
-.ring{width:120px;height:120px;margin:10px auto 22px;position:relative}
+.ring{width:116px;height:116px;margin:12px auto 22px;position:relative}
 .ring svg{transform:rotate(-90deg)}
-.ring .pct{position:absolute;inset:0;display:grid;place-items:center;font-family:"Alfa Slab One",serif;font-size:28px;color:var(--azul)}
-.steps{text-align:left;display:grid;gap:12px;margin-top:20px;background:var(--surface);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-.steps div{display:flex;gap:10px;align-items:center;color:var(--muted);font-weight:800;transition:color .3s}
-.steps div i{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;transition:.3s}
+.ring .pct{position:absolute;inset:0;display:grid;place-items:center;font-family:Fraunces,serif;font-size:28px;font-weight:600;color:var(--brand)}
+.steps{text-align:left;display:grid;gap:12px;margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+.steps div{display:flex;gap:10px;align-items:center;color:var(--muted);font-weight:500;transition:color .3s}
+.steps div i{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line);flex:none;transition:.3s}
 .steps div.done{color:var(--ink)}
-.steps div.done i{background:var(--verde) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/13px no-repeat;border-color:var(--verde)}
+.steps div.done i{background:var(--brand) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6 12.5l4 4 8-9' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;border-color:var(--brand)}
 
-/* resultado */
-.r-head{text-align:center;margin:8px 0 20px}
+/* result */
+.r-head{text-align:center;margin:10px 0 22px}
 .r-head h1{font-size:clamp(28px,7.5vw,36px)}
-.card{background:var(--surface);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px;border:2px solid var(--line)}
+.card{background:var(--surface);border-radius:20px;padding:22px 20px;box-shadow:var(--shadow);border:1px solid var(--line);margin-bottom:16px}
 .card h3{font-size:21px;margin-bottom:6px}
 .card .lead{color:var(--muted);font-size:15px;margin-bottom:14px}
-.profile{background:var(--azul);color:#fff;text-align:center;padding:26px 20px;border:0;position:relative;overflow:hidden}
-.profile::after{content:"";position:absolute;inset:auto 0 0 0;height:7px;background:repeating-linear-gradient(90deg,var(--rosa) 0 24px,var(--naranja) 24px 48px,var(--amarillo) 48px 72px,var(--verde) 72px 96px)}
-.profile .tag{display:inline-block;background:rgba(255,255,255,.16);padding:5px 12px;border-radius:99px;font-weight:900;font-size:12.5px;letter-spacing:.07em;text-transform:uppercase}
-.profile h2{font-family:"Alfa Slab One",serif;font-weight:400;font-size:30px;margin:12px 0 6px;letter-spacing:.01em}
-.profile p{opacity:.92}
-.traits{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}
-.traits span{background:#fff;color:var(--azul);font-weight:900;font-size:14px;padding:6px 12px;border-radius:99px}
-.mapgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
-.mapgrid div{border-radius:14px;padding:12px 6px}
-.mapgrid b{display:block;font-family:"Alfa Slab One",serif;font-weight:400;font-size:28px}
-.mapgrid small{font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
-.m1{background:var(--verde-soft);color:var(--verde)}.m2{background:var(--rosa-soft);color:var(--rosa)}.m3{background:#F1E9DD;color:var(--muted)}
-.mydeck{display:flex;gap:8px;overflow-x:auto;padding:10px 4px 8px;margin-top:6px;scrollbar-width:none}
-.mydeck .lcard{flex:none;width:72px;box-shadow:2px 2px 0 var(--ink)}
-.mydeck .lcard .in{min-height:84px;padding-top:13px}
-.mydeck .lcard .em{font-size:26px}
-.mydeck .lcard .nm{font-size:8.5px}
-.mydeck .lcard .num{font-size:9px}
+.profile{background:var(--brand);color:#fff;border:0;text-align:center;padding:28px 20px}
+.profile .tag{display:inline-block;background:rgba(255,255,255,.14);padding:5px 12px;border-radius:99px;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.profile h2{font-size:30px;margin:12px 0 8px}
+.profile p{opacity:.9;font-size:15.5px}
+.traits{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px}
+.traits span{background:rgba(255,255,255,.95);color:var(--brand);font-weight:700;font-size:13.5px;padding:6px 12px;border-radius:99px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
+.stats div{border-radius:14px;padding:12px 6px;background:var(--bg)}
+.stats b{display:block;font-family:Fraunces,serif;font-weight:600;font-size:28px;line-height:1.1}
+.stats small{font-weight:700;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.stats .s1 b{color:var(--brand)}.stats .s2 b{color:var(--terra)}
+.mylist{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
 .watch{display:grid;gap:10px}
-.watch div{display:flex;gap:12px;align-items:flex-start;background:var(--rosa-soft);border-radius:14px;padding:12px 14px}
-.watch .em{font-size:24px;flex:none}
-.watch b{display:block}
-.watch small{color:#7d2147;font-size:14px;font-weight:700}
-.watch .ok{background:var(--verde-soft)}.watch .ok small{color:var(--verde)}
-.urg{margin-top:14px;padding:12px 14px;border-left:4px solid var(--naranja);background:var(--naranja-soft);border-radius:0 12px 12px 0;font-weight:700;font-size:15px}
+.watch div{display:flex;gap:12px;align-items:flex-start;background:var(--alert-soft);border-radius:12px;padding:12px 14px}
+.watch .em{font-size:22px;flex:none}
+.watch b{display:block;font-weight:700}
+.watch small{color:#7A3524;font-size:14px;font-weight:500}
+.watch .ok{background:var(--brand-soft)}.watch .ok small{color:var(--brand)}
+.urg{margin-top:14px;padding:12px 14px;border-left:3px solid var(--terra);background:var(--terra-soft);border-radius:0 12px 12px 0;font-weight:600;font-size:15px}
 .disc{font-size:13px;color:var(--muted);margin-top:10px}
-.bridge{display:flex;gap:14px;border:2px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;align-items:flex-start}
-.bridge .lcard{flex:none;width:78px}
-.bridge .lcard .in{min-height:96px}
-.bridge .lcard .em{font-size:30px}
-.bridge .lcard .nm{font-size:9px}
+.versus{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.versus div{border-radius:14px;padding:14px 12px}
+.versus h4{font-family:Fraunces,serif;font-weight:600;font-size:16.5px;margin-bottom:8px}
+.versus ul{list-style:none;display:grid;gap:7px;font-size:14px;line-height:1.35}
+.versus .no{background:#F2EEEA;color:#5B5550}
+.versus .no li::before{content:"✕ ";color:var(--alert);font-weight:700}
+.versus .yes{background:var(--brand-soft);color:#1C3F38}
+.versus .yes li::before{content:"✓ ";color:var(--brand);font-weight:700}
+.bridge{display:flex;gap:14px;border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;align-items:flex-start;flex-wrap:wrap}
+.bridge .ic{flex:none;width:52px;height:52px;border-radius:14px;background:var(--bg);display:grid;place-items:center;font-size:28px}
 .bridge .body{flex:1;min-width:0}
-.bridge .from{font-size:12.5px;font-weight:900;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.bridge .to{font-size:18px;font-weight:900;margin:3px 0 4px;line-height:1.25}
-.bridge .why{font-size:15px;color:var(--muted)}
-.bridge .nut{display:inline-block;margin:8px 4px 0 0;background:var(--verde-soft);color:var(--verde);font-weight:900;font-size:12.5px;padding:4px 10px;border-radius:99px}
-.bridge.open{border-color:var(--rosa);background:linear-gradient(180deg,#fff,var(--rosa-soft));flex-wrap:wrap}
-.recipe{flex-basis:100%;background:#fff;border-radius:12px;padding:12px 14px;font-size:15px;border:1.5px dashed var(--rosa)}
+.bridge .from{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.bridge .to{font-size:17.5px;font-weight:700;margin:3px 0 4px;line-height:1.25}
+.bridge .why{font-size:14.5px;color:var(--muted)}
+.bridge .nut{display:inline-block;margin:8px 6px 0 0;background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:12.5px;padding:4px 10px;border-radius:99px}
+.bridge.open{border-color:var(--brand)}
+.recipe{flex-basis:100%;background:var(--bg);border-radius:12px;padding:12px 14px;font-size:15px}
 .recipe ol{padding-left:20px;display:grid;gap:4px;margin-top:4px}
 .locked .blur{filter:blur(6px);user-select:none;pointer-events:none}
-.lock{position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,246,234,.35)}
-.lock span{background:var(--ink);color:#fff;font-weight:900;font-size:14px;padding:8px 14px;border-radius:99px}
+.lock{position:absolute;inset:0;display:grid;place-items:center;background:rgba(246,241,234,.35)}
+.lock span{background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;padding:8px 14px;border-radius:99px}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
-.week div{background:var(--bg);border-radius:12px;padding:8px 2px;font-size:12px;font-weight:900;color:var(--muted)}
-.week div span{display:block;font-size:22px;margin-top:4px}
-.week .now{background:var(--rosa-soft);color:var(--rosa)}
+.week div{background:var(--bg);border-radius:10px;padding:8px 2px;font-size:12px;font-weight:700;color:var(--muted)}
+.week div span{display:block;font-size:20px;margin-top:4px}
+.week .now{background:var(--brand-soft);color:var(--brand)}
 .journey{position:relative;padding-left:26px;display:grid;gap:14px}
-.journey::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:3px;border-radius:3px;background:linear-gradient(var(--azul),var(--rosa),var(--naranja))}
+.journey::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;border-radius:2px;background:var(--line)}
 .journey div{position:relative}
-.journey div::before{content:"";position:absolute;left:-23px;top:5px;width:13px;height:13px;border-radius:50%;background:#fff;border:3px solid var(--rosa)}
-.journey b{display:block}
+.journey div::before{content:"";position:absolute;left:-23px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2.5px solid var(--brand)}
+.journey b{display:block;font-weight:700}
 .journey small{color:var(--muted);font-size:15px}
-.offer{border:3px solid var(--rosa);position:relative;padding-top:30px}
-.offer .ribbon{position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:var(--rosa);color:#fff;font-weight:900;font-size:13px;padding:6px 14px;border-radius:99px;white-space:nowrap}
-.price{text-align:center;margin:6px 0 14px}
-.price .old{color:var(--muted);text-decoration:line-through;font-weight:800}
-.price .now{font-family:"Alfa Slab One",serif;font-size:44px;color:var(--ink);line-height:1}
-.price .now small{font-family:Nunito;font-size:18px;color:var(--muted);font-weight:800}
-.price .per{color:var(--muted);font-weight:800;font-size:14px;margin-top:6px}
-.feat{list-style:none;display:grid;gap:10px}
-.feat li{display:flex;gap:10px;font-weight:700}
-.feat li span{flex:none;font-size:20px}
-.guar{display:flex;gap:12px;align-items:center;background:var(--verde-soft);border-radius:14px;padding:14px;margin-top:16px}
-.guar .em{font-size:34px}
-.guar b{display:block;color:var(--verde)}
-.guar small{color:var(--muted);font-size:14px;font-weight:700}
-details{background:var(--surface);border-radius:14px;padding:14px 16px;margin-bottom:8px;border:2px solid var(--line)}
-summary{font-weight:900;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
-summary::after{content:"+";color:var(--rosa);font-size:22px;line-height:1}
+.offer{border:2px solid var(--brand);position:relative;padding-top:30px}
+.offer .ribbon{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--brand);color:#fff;font-weight:700;font-size:13px;padding:6px 14px;border-radius:99px;white-space:nowrap}
+.price{text-align:center;margin:6px 0 16px}
+.price .old{color:var(--muted);text-decoration:line-through;font-weight:600}
+.price .now{font-family:Fraunces,serif;font-weight:600;font-size:46px;color:var(--ink);line-height:1}
+.price .now small{font-family:"DM Sans";font-size:17px;color:var(--muted);font-weight:600}
+.price .per{color:var(--muted);font-weight:600;font-size:14px;margin-top:6px}
+.feat{list-style:none;display:grid;gap:12px}
+.feat li{display:flex;gap:12px}
+.feat li span{flex:none;width:34px;height:34px;border-radius:10px;background:var(--brand-soft);display:grid;place-items:center;font-size:17px}
+.feat li b{display:block;font-weight:700;font-size:15.5px}
+.feat li small{color:var(--muted);font-size:14px}
+.guar{display:flex;gap:12px;align-items:center;background:var(--gold-soft);border-radius:14px;padding:14px;margin-top:18px}
+.guar .em{font-size:30px}
+.guar b{display:block;color:#5E4A20}
+.guar small{color:#6E5B32;font-size:14px}
+details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:8px}
+summary{font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:10px}
+summary::after{content:"+";color:var(--brand);font-size:22px;line-height:1}
 details[open] summary::after{content:"–"}
 details p{color:var(--muted);margin-top:8px;font-size:15px}
-.foot{font-size:12.5px;color:var(--muted);text-align:center;margin-top:26px;line-height:1.5}
 .letter{font-size:16px}
 .letter p{margin-bottom:10px}
-.letter .sig{font-family:Fraunces,serif;font-weight:800;color:var(--azul)}
+.letter .sig{font-family:Fraunces,serif;font-weight:600;color:var(--brand)}
+.foot{font-size:12.5px;color:var(--muted);text-align:center;margin-top:26px;line-height:1.5}
 </style>
 </head>
 <body>
-<div class="stripe"></div>
 <header class="top" id="top">
   <div class="top-in">
     <button class="back" id="back" aria-label="Volver">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
     </button>
     <div class="logo">mi mapa<b>.</b></div>
     <div class="bar"><i id="bar"></i></div>
   </div>
 </header>
-
 <main class="wrap" id="app"></main>
-
 <script>
 /* =========================================================
    CONFIG — cambia aquí antes de publicar
@@ -271,10 +260,7 @@ if (CONFIG.metaPixelId) {
 const GA_MAP = {Lead:"generate_lead", InitiateCheckout:"begin_checkout", ViewContent:"view_item"};
 const track = (ev, data) => { try { if (window.fbq) fbq('track', ev, data || {}); } catch(e){} ga(GA_MAP[ev]||ev, data); };
 const trackCustom = (ev, data) => { try { if (window.fbq) fbq('trackCustom', ev, data || {}); } catch(e){} ga(ev.replace(/([a-z])([A-Z])/g,"$1_$2").toLowerCase(), data); };
-/* Nome de cada tela, para ver no funil onde as mães param */
-const STEP_NAMES = ["00_inicio","01_nombre","02_edad","03_cantidad","04_insight_culpa","05_baraja","06_textura","07_insight_pista","08_colores","09_mezclado","10_reaccion","11_frutas_verduras","12_insight_urgencia","13_como_te_sientes","14_insight_validacion","15_preocupacion","16_cargando","17_resultado"];
 
-/* ---------- Cartas de Lotería: alimentos de casa ---------- */
 const FOODS = [
   {id:"arroz",     a:"El",  n:"Arroz blanco",   e:"🍚", tx:"suave",     c:"blanco"},
   {id:"arrozrojo", a:"El",  n:"Arroz rojo",     e:"🍛", tx:"suave",     c:"naranja"},
@@ -307,9 +293,6 @@ const FOODS = [
 FOODS.forEach((f,i)=>f.num=i+1);
 const F = Object.fromEntries(FOODS.map(f=>[f.id,f]));
 
-const card = (o, i, extra="") => `<div class="lcard c${i%5} ${extra}"><div class="in"><span class="num">${o.num ?? i+1}</span><div class="em">${o.e}</div><div class="nm">${o.a?o.a+" ":""}${o.n}</div></div></div>`;
-
-/* Alimentos "puente": de lo que ya acepta → siguiente paso */
 const BRIDGES = [
   {id:"camote", from:["papas","totopos"], e:"🍠", a:"El", n:"Camote crujiente",
    to:"Bastones de camote al horno",
@@ -380,34 +363,35 @@ const WATCH = {
 /* ---------- Estado ---------- */
 const S = { name:"", sex:"m", age:"", count:"", foods:[], texture:"", colors:[], mixed:"", reaction:"", veg:"", feel:[], worry:"" };
 let step = 0, history = [];
-
 const $ = s => document.querySelector(s);
 const app = $("#app");
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const N  = () => esc(S.name || (S.sex==="f" ? "tu hija" : "tu hijo"));
 const g  = (m,f) => S.sex==="f" ? f : m;
 const el = () => g("él","ella");
+const chip = (id, cls="") => `<span class="chip ${cls}">${F[id].e} ${F[id].n}</span>`;
 
 /* ---------- Pantallas ---------- */
 const SCREENS = [
   /* 0 — HERO */
   { noBar:true, render: () => `
     <section class="screen hero">
-      <div class="eyebrow">Quiz gratuito · 2 minutos</div>
-      <h1>¿En tu casa la comida es <em>siempre lo mismo</em>?</h1>
-      <p class="sub">Arroz, papas, pollo… y si le cambias algo, se acaba la comida. Descubre por qué pasa, qué le puede estar faltando en el plato y por dónde empezar.</p>
-      <div class="hero-art">
-        <div class="fan">${card(F.arroz,1)}${card(F.papas,0)}${card(F.pollo,2)}</div>
-        <div class="arrow-row"><span class="pill">Lo que ya come</span> → <span class="pill o">Lo que podría aceptar</span></div>
-        <div class="minis">${[BRIDGES[0],BRIDGES[1],BRIDGES[2],BRIDGES[8]].map((b,i)=>card({...b,num:28+i},i+3)).join("")}</div>
+      <div class="eyebrow">Para mamás y papás de niños con alimentación selectiva</div>
+      <h1>Si tu hijo come siempre lo mismo, no es un capricho. <em>Pero tampoco se va a resolver solo.</em></h1>
+      <p class="sub">Responde 12 preguntas y descubre por qué rechaza lo que rechaza, qué nutrientes le pueden estar faltando y cuáles son los primeros alimentos que tiene más probabilidad de aceptar.</p>
+      <div class="preview">
+        <div class="row"><span class="lbl">Hoy come</span><div class="chips">${chip("arroz")}${chip("papas")}${chip("pollo")}</div></div>
+        <div class="row"><span class="lbl">En 4 semanas</span><div class="chips"><span class="chip new">🍠 Camote</span><span class="chip new">🥕 Zanahoria</span><span class="chip new">🫘 Frijol</span></div></div>
+        <div class="meter"><div class="t"><span>Variedad en su plato</span><span>+ hierro · + fibra</span></div><div class="b"><i></i></div></div>
       </div>
-      <ul class="bullets">
-        <li>El perfil sensorial de tu peque (texturas, colores, formas)</li>
+      <ul class="checks">
+        <li>El perfil sensorial de tu hijo: texturas, colores y formas que acepta</li>
         <li>Los nutrientes que podrían estar faltando en su plato</li>
-        <li>3 alimentos “puente” pensados a partir de lo que ya le gusta</li>
+        <li>3 alimentos “puente” elegidos a partir de lo que ya le gusta</li>
       </ul>
-      <button class="cta rosa pulse" data-next>Descubrir su perfil →</button>
-      <p class="fine">Sin registro. Sin obligarlo a comer nada.</p>
+      <button class="cta terra" data-next>Hacer el test gratuito →</button>
+      <p class="fine">2 minutos · Sin registro · Resultado inmediato</p>
+      <div class="method"><span class="ic">🧭</span><span>Basado en el <b>encadenamiento de alimentos</b> (<i>food chaining</i>), la técnica que usan terapeutas de alimentación: pasar de lo que el niño ya acepta a alimentos parecidos, paso a paso.</span></div>
     </section>` },
 
   /* 1 — NOMBRE + SEXO */
@@ -415,7 +399,7 @@ const SCREENS = [
     <section class="screen">
       <div class="eyebrow">Empecemos</div>
       <h2 class="q">¿Cómo se llama tu peque?</h2>
-      <p class="sub">Así armamos su mapa, solo para ${S.sex==="f"?"ella":"él"}.</p>
+      <p class="sub">Usaremos su nombre para armar un resultado hecho para ${S.sex==="f"?"ella":"él"}.</p>
       <input class="input" id="name" maxlength="20" placeholder="Su nombre" value="${esc(S.name)}" autocomplete="off">
       <div class="gender">
         <button class="opt ${S.sex==="m"?"sel":""}" data-sex="m"><span class="em">👦</span>Niño</button>
@@ -433,46 +417,47 @@ const SCREENS = [
     } },
 
   /* 2 — EDAD */
-  single("age", () => `¿Qué edad tiene ${N()}?`, () => "Cada etapa tiene necesidades distintas de crecimiento.", [
+  single("age", () => `¿Qué edad tiene ${N()}?`, () => "Cada etapa de crecimiento necesita cosas distintas.", [
     ["2-3","2 a 3 años","🧸"],["4-6","4 a 6 años","🎒"],["7-10","7 a 10 años","📚"],["11+","11 años o más","🎧"]]),
 
   /* 3 — CANTIDAD */
-  single("count", () => `En una semana normal, ¿cuántos alimentos distintos acepta ${N()}?`, () => "Sin contar dulces ni bebidas. Un cálculo aproximado está perfecto.", [
+  single("count", () => `En una semana normal, ¿cuántos alimentos distintos acepta ${N()}?`, () => "Sin contar dulces ni bebidas. Un cálculo aproximado está bien.", [
     ["<5","Menos de 5","😟"],["5-10","Entre 5 y 10","😕"],["10-20","Entre 10 y 20","🙂"],["20+","Más de 20","😊"]]),
 
-  /* 4 — INSIGHT 1: alivio de culpa */
+  /* 4 — INSIGHT: no es tu culpa + agitar */
   { render: () => {
       const few = S.count==="<5" || S.count==="5-10";
       return `
     <section class="screen">
       <div class="insight">
-        <div class="big">${few?"🫂":"🌱"}</div>
-        <h2>${few ? `No es capricho. Y no es tu culpa.` : `Muy buena base para empezar.`}</h2>
+        <span class="tag">${few?"Lo que pasa en realidad":"Un buen punto de partida"}</span>
+        <h2>${few ? `No es capricho. Y no es tu culpa.` : `${N()} ya tiene una base. Ahora hay que ampliarla.`}</h2>
         ${few ? `
-        <p>Muchos niños en el espectro comen menos de 10 alimentos. Detrás de esto casi nunca hay “mala conducta”: hay un <strong>sistema sensorial que vive las texturas, los colores y los olores con mucha más intensidad</strong>.</p>
-        <p>La buena noticia: si el problema es sensorial, la solución también puede serlo. Y se empieza desde lo que ${N()} <strong>ya acepta</strong>.</p>` : `
-        <p>Que ${N()} acepte varios alimentos es una gran ventaja: cada uno es un <strong>punto de partida</strong> para explorar opciones parecidas en textura, color y forma.</p>
-        <p>Vamos a ver cuáles son sus cartas.</p>`}
+        <p>Muchos niños en el espectro comen menos de 10 alimentos. Casi nunca es “mala conducta”: su sistema sensorial vive las <strong>texturas, colores y olores con mucha más intensidad</strong>.</p>
+        <p>El problema es que, mientras tanto, la comida se vuelve una <strong>negociación diaria</strong>: cocinar dos veces, insistir, ceder, y terminar con el mismo plato de siempre.</p>
+        <p>La buena noticia: si el problema es sensorial, la solución también puede serlo.</p>` : `
+        <p>Que ${N()} acepte varios alimentos es una ventaja: cada uno es un <strong>punto de partida</strong> para llegar a opciones parecidas en textura, color y forma.</p>
+        <p>Veamos cuáles son sus alimentos seguros.</p>`}
       </div>
-      <button class="cta" data-next>Armar su baraja →</button>
+      <button class="cta" data-next>Continuar →</button>
     </section>`; } },
 
-  /* 5 — ALIMENTOS: baraja de Lotería */
+  /* 5 — ALIMENTOS SEGUROS */
   { render: () => `
     <section class="screen">
-      <div class="eyebrow">La baraja de ${N()}</div>
-      <h2 class="q">Toca las cartas de lo que ${N()} come sin problema</h2>
-      <p class="sub">Estas son sus “cartas seguras”. De aquí salen todas sus recomendaciones.</p>
-      <div class="deck">${FOODS.map((f,i)=>`<button data-food="${f.id}" style="padding:0">${card(f,i,S.foods.includes(f.id)?"sel":"")}</button>`).join("")}</div>
+      <div class="eyebrow">Sus alimentos seguros</div>
+      <h2 class="q">Marca todo lo que ${N()} come sin problema</h2>
+      <p class="sub">Con esto calculamos qué le falta y por dónde empezar.</p>
+      <div class="grid">${FOODS.map(f=>`<button class="food ${S.foods.includes(f.id)?"sel":""}" data-food="${f.id}"><span class="em">${f.e}</span>${f.n}</button>`).join("")}</div>
       <p class="counter" id="cnt"></p>
       <div class="sticky-cta"><button class="cta" id="go">Continuar</button></div>
     </section>`,
     mount: () => {
-      const upd = () => { const n=S.foods.length; $("#cnt").innerHTML = n ? `<b>${n}</b> carta${n>1?"s":""} en la baraja de ${N()}` : "Elige al menos 1 carta"; $("#go").disabled = !n; };
+      const upd = () => { const n=S.foods.length; $("#cnt").innerHTML = n ? `<b>${n}</b> alimento${n>1?"s":""} seguro${n>1?"s":""}` : "Elige al menos 1"; $("#go").disabled = !n; };
       document.querySelectorAll("[data-food]").forEach(x => x.onclick = () => {
         const id=x.dataset.food; const i=S.foods.indexOf(id);
         i>-1 ? S.foods.splice(i,1) : S.foods.push(id);
-        x.firstElementChild.classList.toggle("sel"); upd();
+        x.classList.toggle("sel"); upd();
         if (navigator.vibrate) navigator.vibrate(8);
       });
       $("#go").onclick = next; upd();
@@ -481,29 +466,29 @@ const SCREENS = [
   /* 6 — TEXTURA */
   single("texture", () => `¿Qué textura prefiere ${N()}?`, () => "La textura suele ser la pista más importante.", [
     ["crujiente","Crujiente","🥨","Papitas, galletas, totopos"],
-    ["suave","Suave y parejita","🍚","Arroz, pasta, pan"],
-    ["cremoso","Cremosa o caldosa","🍜","Sopita, yogur, frijolitos"],
+    ["suave","Suave y uniforme","🍚","Arroz, pasta, pan"],
+    ["cremoso","Cremosa o caldosa","🍜","Sopa, yogur, frijoles"],
     ["seco","Seca y firme","🍗","Pollo, carne, tortilla"]]),
 
-  /* 7 — INSIGHT 2: pista desbloqueada */
+  /* 7 — INSIGHT: pista */
   { render: () => {
-      const t = {crujiente:"lo crujiente",suave:"lo suave y parejito",cremoso:"lo cremoso",seco:"lo seco y firme"}[S.texture];
+      const t = {crujiente:"lo crujiente",suave:"lo suave y uniforme",cremoso:"lo cremoso",seco:"lo seco y firme"}[S.texture];
       return `
     <section class="screen">
       <div class="insight">
-        <span class="badge-new">🔓 Pista desbloqueada</span>
-        <h2>${N()} busca ${t}. Eso es una pista, no un problema.</h2>
-        <p>Los niños con alimentación selectiva suelen rechazar <strong>la sensación</strong>, no el alimento. Si ${el()} se siente segur${g("o","a")} con ${t}, hay decenas de alimentos nutritivos que se pueden preparar <strong>con esa misma textura</strong>.</p>
-        <p>Por eso obligar casi nunca funciona… y adaptar, sí.</p>
+        <span class="tag gold">Primera pista</span>
+        <h2>${N()} busca ${t}. Eso no es el problema: es la llave.</h2>
+        <p>Los niños con alimentación selectiva suelen rechazar <strong>la sensación</strong>, no el alimento. Por eso obligar casi nunca funciona: aumenta la ansiedad y el rechazo.</p>
+        <p>Lo que sí funciona es preparar alimentos nutritivos <strong>con esa misma textura</strong>, para que el cerebro de ${N()} los reconozca como seguros.</p>
       </div>
-      <button class="cta" data-next>Seguir armando su perfil →</button>
+      <button class="cta" data-next>Seguir →</button>
     </section>`; } },
 
-  /* 8 — COLORES (multi) */
+  /* 8 — COLORES */
   multi("colors", () => `¿Qué colores de comida acepta ${N()}?`, () => "Elige todos los que apliquen.", [
-    ["blanco","Blancos y beige","🤍","Arroz, pasta, tortilla"],["dorado","Dorados","🟫","Papas, nuggets, molletes"],
-    ["naranja","Naranjas y amarillos","🧡","Arroz rojo, mango, huevo"],["rojo","Rojos","❤️","Jitomate, manzana, gelatina"],
-    ["verde","Verdes","💚","Brócoli, pepino, aguacate"]]),
+    ["blanco","Blancos y beige","⚪","Arroz, pasta, tortilla"],["dorado","Dorados","🟤","Papas, nuggets, molletes"],
+    ["naranja","Naranjas y amarillos","🟠","Arroz rojo, mango, huevo"],["rojo","Rojos","🔴","Jitomate, manzana, gelatina"],
+    ["verde","Verdes","🟢","Brócoli, pepino, aguacate"]]),
 
   /* 9 — MEZCLADO */
   single("mixed", () => `¿Cómo le gusta el plato a ${N()}?`, () => "", [
@@ -512,49 +497,49 @@ const SCREENS = [
   /* 10 — REACCIÓN */
   single("reaction", () => `Cuando le ofreces algo nuevo, ¿qué suele hacer ${N()}?`, () => "", [
     ["mira","Lo mira o lo huele, pero no lo prueba","👀"],["aleja","Lo aleja o se levanta de la mesa","🙅"],
-    ["llanto","Llora o hace berrinche","😭"],["nausea","Le dan náuseas o arcadas","🤢"],["prueba","A veces lo prueba","🤏"]]),
+    ["llanto","Llora o hace berrinche","😣"],["nausea","Le dan náuseas o arcadas","🤢"],["prueba","A veces lo prueba","🤏"]]),
 
-  /* 11 — FRUTA / VERDURA */
-  single("veg", () => `¿Cuántas veces por semana come ${N()} fruta o verdura?`, () => "Aquí nadie te juzga. 💛", [
+  /* 11 — FRUTAS / VERDURAS */
+  single("veg", () => `¿Cuántas veces por semana come ${N()} fruta o verdura?`, () => "Responde con sinceridad. Nadie te está juzgando.", [
     ["0","Casi nunca","🚫"],["1-2","1 o 2 veces","🍌"],["3-5","3 a 5 veces","🍎"],["diario","Todos los días","🥗"]]),
 
-  /* 12 — INSIGHT 3: URGENCIA (lo que no se ve) */
+  /* 12 — INSIGHT: URGENCIA */
   { render: () => {
       const low = S.veg==="0" || S.veg==="1-2" || S.count==="<5" || S.count==="5-10";
       return `
     <section class="screen">
-      <div class="insight ${low?"alert":""}">
-        <div class="eyebrow" style="margin-top:6px">${low?"Lo que casi nadie te explica":"Un dato importante"}</div>
-        <h2>${low?"Lo que no se ve en el plato, se ve en el cuerpo.":"Variedad hoy, tranquilidad mañana."}</h2>
+      <div class="insight">
+        <span class="tag ${low?"alert":""}">${low?"Lo que casi nadie te explica":"Un dato importante"}</span>
+        <h2>${low?"Lo que no se ve en el plato, se ve en el cuerpo.":"Más variedad hoy, más tranquilidad mañana."}</h2>
         ${low ? `
-        <p>Cuando un niño come casi siempre lo mismo durante meses, es común que empiecen a faltarle nutrientes que pesan justo <strong>en la etapa en que más está creciendo</strong>:</p>
+        <p>Cuando un niño come casi lo mismo durante meses, es común que empiecen a faltar nutrientes justo <strong>en la etapa en la que más está creciendo</strong>:</p>
         <div class="nutrows">
-          <div><span>🩸</span>Hierro — energía, atención y desarrollo</div>
-          <div><span>🦴</span>Calcio — huesos y dientes</div>
-          <div><span>👁️</span>Vitamina A — vista, piel y defensas</div>
+          <div><span>🩸</span><span><b>Hierro</b> — energía, atención y desarrollo</span></div>
+          <div><span>🦴</span><span><b>Calcio</b> — huesos y dientes</span></div>
+          <div><span>👁️</span><span><b>Vitamina A</b> — vista, piel y defensas</span></div>
+          <div><span>🌾</span><span><b>Fibra</b> — digestión (el estreñimiento es muy común)</span></div>
         </div>
-        <p>No pasa de un día para otro. Por eso casi nadie lo nota a tiempo… <strong>y por eso “ya comerá” no es un plan.</strong></p>
-        <p>Vamos a ver qué hay, y qué falta, en el plato de ${N()}.</p>` : `
-        <p>Aunque ${N()} ya come algo de fruta o verdura, entre más variado sea su plato, <strong>más fácil es cubrir hierro, calcio y vitaminas</strong> mientras crece.</p>
-        <p>Vamos a ver qué hay, y qué falta, en su plato.</p>`}
+        <p>No pasa de un día para otro. Por eso casi nadie lo nota a tiempo.</p>
+        <div class="quote">“Ya comerá”, te dicen. Pero los meses pasan, y el plato sigue igual.</div>` : `
+        <p>Aunque ${N()} ya come algo de fruta o verdura, entre más variado sea su plato, <strong>más fácil es cubrir hierro, calcio y vitaminas</strong> mientras crece.</p>`}
       </div>
-      <button class="cta" data-next>Seguir →</button>
+      <button class="cta" data-next>Continuar →</button>
     </section>`; } },
 
-  /* 13 — CÓMO TE SIENTES (multi) */
-  multi("feel", () => `Y tú, ¿cómo te sientes a la hora de la comida?`, () => "Elige todo lo que sientas. Esta parte también importa.", [
+  /* 13 — CÓMO TE SIENTES */
+  multi("feel", () => `Y tú, ¿cómo te sientes a la hora de la comida?`, () => "Elige todo lo que sientas. Esto también importa.", [
     ["cansada","Agotada, es una batalla diaria","😮‍💨"],["culpa","Culpable, siento que algo hago mal","😔"],
-    ["miedo","Preocupada por su salud","💭"],["juzgada","Juzgada por la familia, la escuela o el pediatra","👀"],
+    ["miedo","Preocupada por su salud y su crecimiento","💭"],["juzgada","Juzgada por la familia, la escuela o el pediatra","👥"],
     ["sola","Sola, nadie entiende lo que vivo","🫥"]]),
 
-  /* 14 — INSIGHT 4: validación */
+  /* 14 — INSIGHT: validación */
   { render: () => `
     <section class="screen">
       <div class="insight">
-        <div class="big">💛</div>
+        <span class="tag">No estás sola</span>
         <h2>Lo que sientes tiene todo el sentido.</h2>
-        <p>Cocinar dos o tres veces, ver el plato regresar igualito, escuchar “ya comerá” de la suegra, de la maestra, hasta del pediatra… mientras por dentro te preguntas si está creciendo bien. <strong>Eso cansa a cualquiera.</strong></p>
-        <p>Nada de esto significa que lo estés haciendo mal. Significa que te faltaba <strong>un mapa</strong>. Y ya casi ves el de ${N()}.</p>
+        <p>Cocinar dos o tres veces, ver el plato regresar intacto, escuchar “ya comerá” de la suegra, de la maestra, a veces hasta del pediatra… mientras por dentro te preguntas si ${N()} está creciendo bien. <strong>Eso cansa a cualquiera.</strong></p>
+        <p>No te faltó amor ni paciencia. <strong>Te faltó un plan.</strong> Uno que empiece por lo que ${N()} ya acepta.</p>
       </div>
       <button class="cta" data-next>Continuar →</button>
     </section>` },
@@ -562,41 +547,60 @@ const SCREENS = [
   /* 15 — PREOCUPACIÓN */
   single("worry", () => `¿Qué es lo que más te preocupa hoy?`, () => "", [
     ["nutrientes","Que le falten nutrientes","🩺"],["crecimiento","Su crecimiento y desarrollo","📏"],
-    ["futuro","Que esto siga igual cuando sea más grande","⏳"],["familia","Poder comer en familia sin pelear","👨‍👩‍👧"]]),
+    ["futuro","Que esto siga igual cuando sea más grande","⏳"],["familia","Poder comer en familia sin pelear","🍽️"]]),
 
-  /* 16 — LOADING */
+  /* 16 — IMAGINA (ganancia) */
+  { render: () => `
+    <section class="screen">
+      <div class="insight">
+        <span class="tag gold">Ahora imagina</span>
+        <h2>Dentro de unas semanas…</h2>
+        <ul class="dream">
+          <li><span>🍽️</span>Sentarte a comer en familia sin negociar cada bocado.</li>
+          <li><span>🥕</span>Ver a ${N()} probar algo nuevo, <strong>por su cuenta</strong>, sin presión.</li>
+          <li><span>📈</span>Saber, con datos, que su plato tiene más hierro, calcio y fibra que hace un mes.</li>
+          <li><span>🛒</span>Ir al súper sabiendo exactamente qué comprar y qué cocinar cada día.</li>
+          <li><span>💛</span>Dejar de sentir culpa en cada comida.</li>
+        </ul>
+        <p>Eso es lo que construye un plan bien hecho: <strong>pasos pequeños, todas las semanas</strong>.</p>
+      </div>
+      <button class="cta terra" data-next>Ver el resultado de ${N()} →</button>
+    </section>` },
+
+  /* 17 — CARGANDO */
   { noBar:true, noBack:true, render: () => `
     <section class="screen loading">
       <div class="eyebrow">Casi listo</div>
-      <h2 class="q">Armando el mapa alimentario de ${N()}…</h2>
+      <h2 class="q">Preparando el mapa alimentario de ${N()}…</h2>
       <div class="ring">
-        <svg width="120" height="120"><circle cx="60" cy="60" r="52" stroke="var(--line)" stroke-width="10" fill="none"/><circle id="arc" cx="60" cy="60" r="52" stroke="var(--rosa)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="327" stroke-dashoffset="327"/></svg>
+        <svg width="116" height="116"><circle cx="58" cy="58" r="50" stroke="var(--line)" stroke-width="8" fill="none"/><circle id="arc" cx="58" cy="58" r="50" stroke="var(--brand)" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314"/></svg>
         <div class="pct" id="pct">0%</div>
       </div>
       <div class="steps" id="steps">
-        <div><i></i>Leyendo sus ${S.foods.length} cartas seguras</div>
+        <div><i></i>Analizando sus ${S.foods.length} alimentos seguros</div>
         <div><i></i>Identificando su perfil sensorial</div>
         <div><i></i>Revisando los nutrientes de su plato</div>
-        <div><i></i>Buscando alimentos puente compatibles</div>
+        <div><i></i>Eligiendo sus alimentos puente</div>
       </div>
     </section>`,
     mount: () => {
       trackCustom("QuizCompleted", {count:S.count, foods:S.foods.length});
       track("Lead");
       let p=0; const arc=$("#arc"), pct=$("#pct"), rows=[...document.querySelectorAll("#steps div")];
-      const t=setInterval(()=>{ p+=2; arc.style.strokeDashoffset = 327-327*p/100; pct.textContent=p+"%";
+      const t=setInterval(()=>{ p+=2; arc.style.strokeDashoffset = 314-314*p/100; pct.textContent=p+"%";
         rows.forEach((r,i)=>{ if(p>=(i+1)*24) r.classList.add("done"); });
         if(p>=100){ clearInterval(t); setTimeout(next,450); } }, 70);
     } },
 
-  /* 17 — RESULTADO */
+  /* 18 — RESULTADO */
   { noBar:true, noBack:true, render: renderResult, mount: () => {
       track("ViewContent",{content_name:"resultado_quiz"});
       document.querySelectorAll("[data-buy]").forEach(b => b.onclick = buy);
     } },
 ];
+const STEP_NAMES = ["00_inicio","01_nombre","02_edad","03_cantidad","04_insight_culpa","05_alimentos","06_textura","07_insight_pista","08_colores","09_mezclado","10_reaccion","11_frutas_verduras","12_insight_urgencia","13_como_te_sientes","14_insight_validacion","15_preocupacion","16_imagina","17_cargando","18_resultado"];
 
-/* ---------- Constructores de preguntas ---------- */
+/* ---------- Constructores ---------- */
 function single(key, title, sub, options){
   return { render: () => `
     <section class="screen">
@@ -606,7 +610,7 @@ function single(key, title, sub, options){
     mount: () => document.querySelectorAll("[data-v]").forEach(x => x.onclick = () => {
       S[key]=x.dataset.v; document.querySelectorAll("[data-v]").forEach(y=>y.classList.toggle("sel",y===x));
       if (navigator.vibrate) navigator.vibrate(8);
-      setTimeout(next, 260);
+      setTimeout(next, 240);
     }) };
 }
 function multi(key, title, sub, options){
@@ -636,7 +640,6 @@ function analyze(){
   if (!has("vitA")) gaps.push("vitA");
   if (!has("fibra") || S.veg==="0") gaps.push("fibra");
   const uniq = [...new Set(gaps)];
-
   const scored = BRIDGES.map(b => {
     const anchor = b.from.find(id => S.foods.includes(id));
     if (!anchor) return null;
@@ -645,118 +648,114 @@ function analyze(){
     if (S.texture==="crujiente" && /camote|zanahoria|nuggets|papas-horno|molletes/.test(b.id)) s += 4;
     if (S.texture==="cremoso" && /yogur|licuado|pasta-calabaza|sopa/.test(b.id)) s += 4;
     if (S.texture==="suave" && /arroz|pan|hotcake|quesadilla/.test(b.id)) s += 4;
-    if (b.id==="papas-horno") s -= 3; // paso mínimo: solo si no hay mejor opción
+    if (b.id==="papas-horno") s -= 3;
     return {...b, anchor, s};
   }).filter(Boolean).sort((a,b)=>b.s-a.s);
   let picks = scored.slice(0,3);
-  if (picks.length < 3) {
-    for (const id of ["hotcake-platano","licuado","camote","papas-horno"]) {
-      if (picks.length<3 && !picks.some(p=>p.id===id)) picks.push({...BRIDGES.find(b=>b.id===id), anchor:null});
-    }
+  for (const id of ["hotcake-platano","licuado","camote","papas-horno"]) {
+    if (picks.length<3 && !picks.some(p=>p.id===id)) picks.push({...BRIDGES.find(b=>b.id===id), anchor:null});
   }
-
-  const texName = {crujiente:"Crujiente",suave:"Suavecito",cremoso:"Cremoso",seco:"Firme"}[S.texture] || "Suavecito";
+  const texName = {crujiente:"Crujiente",suave:"Suave",cremoso:"Cremoso",seco:"Firme"}[S.texture] || "Suave";
   const colorCount = {}; S.foods.forEach(id=>{ const c=F[id].c; colorCount[c]=(colorCount[c]||0)+1; });
   const topColor = Object.entries(colorCount).sort((a,b)=>b[1]-a[1])[0]?.[0] || "blanco";
-  const colName = {blanco:"Neutro",dorado:"Dorado",naranja:"Cálido",rojo:"Intenso",verde:"Verde",cafe:"Tierra",amarillo:"Cálido"}[topColor];
+  const colName = {blanco:"neutro",dorado:"dorado",naranja:"cálido",rojo:"intenso",verde:"verde",cafe:"tierra",amarillo:"cálido"}[topColor];
   const traits = [
-    {crujiente:"Ama lo crujiente",suave:"Prefiere lo parejito",cremoso:"Prefiere lo cremoso",seco:"Prefiere lo firme"}[S.texture],
+    {crujiente:"Prefiere lo crujiente",suave:"Prefiere lo uniforme",cremoso:"Prefiere lo cremoso",seco:"Prefiere lo firme"}[S.texture],
     {blanco:"Colores claros",dorado:"Tonos dorados",naranja:"Tonos cálidos",rojo:"Colores intensos",verde:"Acepta verdes",cafe:"Tonos tierra",amarillo:"Tonos cálidos"}[topColor],
     {separado:"Todo separado","mezcla-poco":"Poca mezcla",mezcla:"Acepta mezclas"}[S.mixed] || "",
   ].filter(Boolean);
-
-  return {gaps:uniq.slice(0,3), picks, profile:`${texName} & ${colName}`, traits};
+  return {gaps:uniq.slice(0,3), picks, profile:`${texName} y ${colName}`, traits};
 }
 
 function renderResult(){
   const r = analyze();
-  const n = S.foods.length;
-  const pr = CONFIG.price;
+  const n = S.foods.length, pr = CONFIG.price;
   const days = ["L","M","M","J","V","S","D"];
   const worryLine = {
-    nutrientes:`Te preocupa que le falten nutrientes. Aquí arriba ves exactamente dónde poner atención.`,
+    nutrientes:`Te preocupa que le falten nutrientes. Arriba ves exactamente dónde poner atención.`,
     crecimiento:`Te preocupa su crecimiento. Estos nutrientes son justo los que más pesan en esta etapa.`,
-    futuro:`Te preocupa que esto siga igual. Por eso el plan avanza en pasos pequeñitos, semana a semana.`,
-    familia:`Quieres comer en familia sin pelear. Empezar desde lo que ya acepta le quita la presión a la mesa.`,
+    futuro:`Te preocupa que esto siga igual. Por eso el plan avanza en pasos pequeños, semana a semana.`,
+    familia:`Quieres comer en familia sin pelear. Empezar por lo que ya acepta le quita la presión a la mesa.`,
   }[S.worry] || "";
-
   return `
   <section class="screen">
-    <div class="r-head">
-      <div class="eyebrow">Resultado listo</div>
-      <h1>El mapa alimentario de ${N()}</h1>
-    </div>
+    <div class="r-head"><div class="eyebrow">Tu resultado está listo</div><h1>El mapa alimentario de ${N()}</h1></div>
 
     <div class="card profile">
       <span class="tag">Perfil sensorial</span>
       <h2>${esc(r.profile)}</h2>
-      <p>${N()} se siente segur${g("o","a")} con alimentos predecibles. Con este perfil, el camino es <b>parecerse a lo que ya come</b>, no cambiarlo de golpe.</p>
+      <p>${N()} se siente segur${g("o","a")} con alimentos predecibles. Con este perfil, el camino no es cambiar todo de golpe: es <b>parecerse a lo que ya come</b>.</p>
       <div class="traits">${r.traits.map(t=>`<span>${t}</span>`).join("")}</div>
     </div>
 
     <div class="card">
-      <h3>Su baraja hoy</h3>
-      <p class="lead">Las cartas seguras de ${N()}:</p>
-      <div class="mapgrid">
-        <div class="m1"><b>${n}</b><small>Acepta</small></div>
-        <div class="m2"><b>${r.picks.length}</b><small>Para explorar</small></div>
-        <div class="m3"><b>?</b><small>Por descubrir</small></div>
+      <h3>Su punto de partida</h3>
+      <div class="stats">
+        <div class="s1"><b>${n}</b><small>Seguros</small></div>
+        <div class="s2"><b>${r.gaps.length}</b><small>Por cubrir</small></div>
+        <div><b>${r.picks.length}</b><small>Puentes</small></div>
       </div>
-      <div class="mydeck">${S.foods.map(id=>card(F[id],F[id].num-1)).join("")}</div>
+      <div class="mylist">${S.foods.map(id=>chip(id)).join("")}</div>
     </div>
 
     <div class="card">
       <h3>Lo que podría estar faltando en su plato</h3>
-      <p class="lead">Según las cartas que marcaste, estos nutrientes merecen atención:</p>
+      <p class="lead">Según los alimentos que marcaste:</p>
       <div class="watch">
         ${r.gaps.length ? r.gaps.map(k=>`<div><span class="em">${WATCH[k].e}</span><span><b>${WATCH[k].n}</b><small>${WATCH[k].why}</small></span></div>`).join("")
-          : `<div class="ok"><span class="em">✅</span><span><b>Buena variedad de grupos</b><small>Aun así, ampliar el repertorio da más seguridad a largo plazo.</small></span></div>`}
+          : `<div class="ok"><span class="em">✅</span><span><b>Buena variedad de grupos</b><small>Ampliar el repertorio da todavía más seguridad a largo plazo.</small></span></div>`}
       </div>
-      ${r.gaps.length?`<div class="urg">Cada mes con el mismo plato es un mes más con los mismos huecos. Lo bueno: se puede empezar hoy, desde lo que ya le gusta.</div>`:""}
-      ${worryLine?`<p class="disc" style="font-size:15px;color:var(--ink);font-weight:700">${worryLine}</p>`:""}
+      ${r.gaps.length?`<div class="urg">Cada mes con el mismo plato es un mes más con los mismos huecos. La buena noticia: se puede empezar hoy, desde lo que ya le gusta.</div>`:""}
+      ${worryLine?`<p class="disc" style="font-size:15px;color:var(--ink);font-weight:600">${worryLine}</p>`:""}
       <p class="disc">Esto es una orientación, no un diagnóstico. Si te preocupa, consulta a su pediatra o nutriólogo.</p>
     </div>
 
     <div class="card">
-      <h3>3 cartas nuevas para ${N()}</h3>
-      <p class="lead">Elegidas por parecerse a lo que ya come <b>y</b> por cubrir lo que falta. La primera es tuya, gratis:</p>
+      <h3>Dos caminos a partir de hoy</h3>
+      <div class="versus" style="margin-top:12px">
+        <div class="no"><h4>Si todo sigue igual</h4><ul><li>El mismo plato, semana tras semana</li><li>Los mismos huecos de nutrientes</li><li>Cada comida, una negociación</li><li>La duda de si está creciendo bien</li></ul></div>
+        <div class="yes"><h4>Con un plan</h4><ul><li>Un alimento nuevo a la vez, sin presión</li><li>Un menú listo cada semana</li><li>Su avance medido en números</li><li>Comidas más tranquilas en casa</li></ul></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Los 3 alimentos puente de ${N()}</h3>
+      <p class="lead">Elegidos por parecerse a lo que ya come <b>y</b> por cubrir lo que le falta. El primero es tuyo, gratis:</p>
       ${r.picks.map((b,i)=>`
         <div class="bridge ${i===0?"open":"locked"}">
-          ${card({...b,num:28+i},i+3,i===0?"":"blur")}
+          <div class="ic ${i===0?"":"blur"}">${b.e}</div>
           <div class="body ${i===0?"":"blur"}">
-            <div class="from">${b.anchor?`Porque le gusta: ${F[b.anchor].e} ${F[b.anchor].n}`:"Primer paso sugerido"}</div>
+            <div class="from">${b.anchor?`Porque le gusta: ${F[b.anchor].n}`:"Primer paso sugerido"}</div>
             <div class="to">${b.to}</div>
             <div class="why">${b.why}</div>
             ${b.nut.filter(x=>WATCH[x]).slice(0,2).map(x=>`<span class="nut">+ ${WATCH[x].n}</span>`).join("")}
           </div>
           ${i===0?`<div class="recipe"><b>Cómo hacerlo:</b><ol>${b.recipe.map(s=>`<li>${s}</li>`).join("")}</ol></div>`:""}
-          ${i>0?`<div class="lock"><span>🔒 En tu plan completo</span></div>`:""}
+          ${i>0?`<div class="lock"><span>🔒 Disponible en tu plan</span></div>`:""}
         </div>`).join("")}
     </div>
 
     <div class="card">
       <h3>Su primera semana</h3>
-      <p class="lead">Un paso pequeñito por día, siempre junto a sus alimentos de siempre.</p>
-      <div class="week">
-        ${days.map((d,i)=>`<div class="${i===0?"now":""}">${d}<span class="${i===0?"":"blur"}">${i===0?r.picks[0].e:["🍠","🥕","🍳","🥞","🫓","🥭"][i-1]}</span></div>`).join("")}
-      </div>
+      <p class="lead">Un paso pequeño por día, siempre junto a sus alimentos de siempre.</p>
+      <div class="week">${days.map((d,i)=>`<div class="${i===0?"now":""}">${d}<span class="${i===0?"":"blur"}">${i===0?r.picks[0].e:["🍠","🥕","🍳","🥞","🫓","🥭"][i-1]}</span></div>`).join("")}</div>
     </div>
 
     <div class="card">
       <h3>Así se ve el camino</h3>
-      <p class="lead">Sin forzar. Sin pelear. Paso a pasito.</p>
+      <p class="lead">Sin forzar. Sin pelear. Paso a paso.</p>
       <div class="journey">
-        <div><b>Semana 1 · Explorar</b><small>${N()} ve, toca y huele sus cartas nuevas junto a lo de siempre.</small></div>
-        <div><b>Semana 2 · Probar</b><small>Registras qué aceptó, qué toleró y qué rechazó. El mapa se ajusta solito.</small></div>
-        <div><b>Semana 3 · Ampliar</b><small>Nuevas cartas a partir de lo que ya funcionó.</small></div>
-        <div><b>Semana 4 · Ver el avance</b><small>Comparas su baraja y sus nutrientes con el primer día.</small></div>
+        <div><b>Semana 1 · Explorar</b><small>${N()} ve, toca y huele sus alimentos puente junto a lo de siempre.</small></div>
+        <div><b>Semana 2 · Probar</b><small>Marcas qué aceptó, qué probó y qué rechazó. El plan se ajusta.</small></div>
+        <div><b>Semana 3 · Ampliar</b><small>Nuevos puentes a partir de lo que ya funcionó.</small></div>
+        <div><b>Semana 4 · Ver el avance</b><small>Comparas su variedad y sus nutrientes con el primer día.</small></div>
       </div>
     </div>
 
     <div class="card letter">
-      <p>Si llegaste hasta aquí, es porque llevas tiempo buscando algo que funcione.</p>
+      <p>Si llegaste hasta aquí, es porque llevas tiempo buscando algo que de verdad funcione.</p>
       <p>Creamos <b>mi mapa.</b> para que no tengas que adivinar qué cocinar cada día, ni pelear en cada comida, ni quedarte con la duda de si ${N()} está recibiendo lo que necesita.</p>
-      <p>No es una dieta. No es un tratamiento. Es un <b>plan que crece con ${N()}</b>, a su ritmo, empezando por lo que ya le gusta.</p>
+      <p>No es una dieta. No es un tratamiento. Es un <b>plan que avanza con ${N()}</b>, a su ritmo, empezando por lo que ya le gusta.</p>
       <p class="sig">— El equipo de mi mapa.</p>
     </div>
 
@@ -768,28 +767,24 @@ function renderResult(){
         <div class="per">Menos de ${CONFIG.currency}${Math.ceil(pr/30)} al día · Cancela cuando quieras</div>
       </div>
       <ul class="feat">
-        <li><span>🗺️</span>El mapa alimentario de ${N()}, siempre actualizado</li>
-        <li><span>🃏</span>Cartas nuevas cada semana, con receta sencilla</li>
-        <li><span>📝</span>Registro rápido: aceptó, toleró o rechazó</li>
-        <li><span>📈</span>Su avance en variedad y nutrientes, semana a semana</li>
-        <li><span>👩‍🍳</span>Ideas de presentación: formas, colores y texturas que le dan seguridad</li>
+        <li><span>🗓️</span><div><b>Menú semanal listo</b><small>Cada lunes, con sus alimentos seguros y un alimento nuevo por día.</small></div></li>
+        <li><span>🧭</span><div><b>Alimentos puente personalizados</b><small>Elegidos por textura, color y forma, con recetas sencillas.</small></div></li>
+        <li><span>📈</span><div><b>Su avance, medido</b><small>Cuántos alimentos acepta y cuánto hierro, calcio y fibra suma cada semana.</small></div></li>
+        <li><span>🛒</span><div><b>Lista de compras automática</b><small>Todo lo de la semana, con ingredientes de cualquier súper o mercado.</small></div></li>
+        <li><span>✅</span><div><b>Registro en un toque</b><small>Comió todo, un poco o nada. El plan se ajusta solo.</small></div></li>
       </ul>
-      <button class="cta rosa pulse" data-buy>Quiero el plan de ${N()} →</button>
-      <div class="guar">
-        <span class="em">🛡️</span>
-        <span><b>Garantía de ${CONFIG.guaranteeDays} días</b><small>Si no te sirve, te devolvemos el 100%. Sin preguntas.</small></span>
-      </div>
+      <button class="cta terra" data-buy>Empezar el plan de ${N()} →</button>
+      <div class="guar"><span class="em">🛡️</span><span><b>Garantía de ${CONFIG.guaranteeDays} días</b><small>Si no te sirve, te devolvemos el 100%. Sin preguntas.</small></span></div>
     </div>
 
-    <h3 style="font-size:22px;margin:26px 0 12px">Preguntas frecuentes</h3>
-    <details><summary>¿Es una dieta o un tratamiento para el autismo?</summary><p>No. mi mapa. es una herramienta de organización alimentaria: te ayuda a ampliar el repertorio de tu peque respetando sus preferencias sensoriales. No sustituye a su pediatra, nutriólogo ni terapeutas.</p></details>
-    <details><summary>¿Y si mi hijo rechaza todo?</summary><p>Es normal al principio. Por eso cada paso es pequeñito y siempre va junto a sus alimentos de siempre. Registras lo que pasó y el mapa propone el siguiente paso con base en eso.</p></details>
-    <details><summary>¿Necesito comprar ingredientes caros?</summary><p>No. Las recetas usan ingredientes que encuentras en cualquier mercado, tianguis o súper.</p></details>
-    <details><summary>¿Puedo cancelar cuando quiera?</summary><p>Sí. Sin plazos forzosos. Y tienes ${CONFIG.guaranteeDays} días de garantía total.</p></details>
+    <h3 style="font-size:22px;margin:28px 0 12px">Preguntas frecuentes</h3>
+    <details><summary>¿Es una dieta o un tratamiento para el autismo?</summary><p>No. mi mapa. es una herramienta para organizar la alimentación y ampliar el repertorio de tu hijo respetando sus preferencias sensoriales. No sustituye a su pediatra, nutriólogo ni terapeutas.</p></details>
+    <details><summary>¿Y si mi hijo lo rechaza todo?</summary><p>Es normal al principio. Por eso cada paso es pequeño y siempre va junto a sus alimentos de siempre. Marcas lo que pasó y el plan propone el siguiente paso.</p></details>
+    <details><summary>¿Necesito ingredientes caros o especiales?</summary><p>No. Las recetas usan ingredientes que encuentras en cualquier mercado, tianguis o súper.</p></details>
+    <details><summary>¿Puedo cancelar cuando quiera?</summary><p>Sí. Sin plazos forzosos, y con ${CONFIG.guaranteeDays} días de garantía total.</p></details>
 
-    <div class="sticky-cta" style="margin-top:14px"><button class="cta rosa" data-buy>Empezar el plan de ${N()} →</button></div>
-
-    <p class="foot">mi mapa. es una herramienta de apoyo para organizar la alimentación familiar. No ofrece diagnóstico, tratamiento ni prescripción médica o nutricional. Ante cualquier duda sobre la salud de tu peque, consulta a un profesional.</p>
+    <div class="sticky-cta" style="margin-top:14px"><button class="cta terra" data-buy>Empezar el plan de ${N()} →</button></div>
+    <p class="foot">mi mapa. es una herramienta de apoyo para organizar la alimentación familiar. No ofrece diagnóstico, tratamiento ni prescripción médica o nutricional. Ante cualquier duda sobre la salud de tu hijo, consulta a un profesional.</p>
   </section>`;
 }
 
