@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>mi mapa. — Test de alimentación selectiva</title>
-<meta name="description" content="En 2 minutos: por qué tu hijo rechaza lo que rechaza, qué nutrientes le pueden faltar y los 3 primeros alimentos que tiene más probabilidad de aceptar.">
+<meta name="description" content="Para niños que comen poco o siempre lo mismo. En 2 minutos: por qué tu hijo rechaza lo que rechaza, qué nutrientes le pueden faltar y los 3 primeros alimentos que tiene más probabilidad de aceptar.">
 <meta name="theme-color" content="#F6F1EA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -360,6 +360,27 @@ const WATCH = {
   verdura: {e:"🥦", n:"Verduras",   why:"Vitaminas y minerales que casi no se encuentran en otros alimentos."},
 };
 
+/* ---------- Ángulos: la portada cambia según el anuncio (?a=...) ---------- */
+const ANGLES = {
+  general:  { eyebrow:"Para mamás y papás de niños que comen poco o siempre lo mismo",
+              h1:"Si tu hijo come siempre lo mismo, no es un capricho. <em>Pero tampoco se va a resolver solo.</em>",
+              sub:"Responde 12 preguntas y descubre por qué rechaza lo que rechaza, qué nutrientes le pueden estar faltando y cuáles son los primeros alimentos que tiene más probabilidad de aceptar." },
+  autismo:  { eyebrow:"Para mamás y papás de niños en el espectro autista",
+              h1:"En el autismo, comer siempre lo mismo no es terquedad. <em>Es sensorial, y se puede trabajar.</em>",
+              sub:"Responde 12 preguntas y descubre qué texturas y colores le dan seguridad a tu hijo, qué nutrientes le pueden faltar y cuáles son los primeros alimentos que tiene más probabilidad de aceptar." },
+  poco:     { eyebrow:"Para mamás y papás de niños que casi no comen",
+              h1:"Si tu hijo come tan poquito que te preocupa, <em>no estás exagerando.</em>",
+              sub:"Responde 12 preguntas y descubre qué le puede estar faltando en el plato, por qué rechaza la comida y cómo empezar a sumar alimentos sin pelear." },
+  chatarra: { eyebrow:"Para mamás y papás de niños que solo quieren papitas, nuggets y pan",
+              h1:"Si tu hijo solo quiere comida de paquete, <em>no tienes que prohibírsela para que coma mejor.</em>",
+              sub:"Responde 12 preguntas y descubre cómo pasar de lo que ya le gusta a versiones más nutritivas, paso a paso: mismo crujiente, mismo color, más hierro y fibra." },
+  guerra:   { eyebrow:"Para mamás y papás cansados de pelear en cada comida",
+              h1:"Si la hora de comer se volvió una guerra en tu casa, <em>no es tu culpa. Te falta un plan.</em>",
+              sub:"Responde 12 preguntas y descubre por qué tu hijo rechaza lo que rechaza y cómo bajar la tensión de la mesa empezando por lo que ya acepta." },
+};
+const ANGLE = (()=>{ const a=(new URLSearchParams(location.search).get("a")||"").toLowerCase(); return ANGLES[a]?a:"general"; })();
+const A = ANGLES[ANGLE];
+
 /* ---------- Estado ---------- */
 const S = { name:"", sex:"m", age:"", count:"", foods:[], texture:"", colors:[], mixed:"", reaction:"", veg:"", feel:[], worry:"" };
 let step = 0, history = [];
@@ -376,9 +397,9 @@ const SCREENS = [
   /* 0 — HERO */
   { noBar:true, render: () => `
     <section class="screen hero">
-      <div class="eyebrow">Para mamás y papás de niños con alimentación selectiva</div>
-      <h1>Si tu hijo come siempre lo mismo, no es un capricho. <em>Pero tampoco se va a resolver solo.</em></h1>
-      <p class="sub">Responde 12 preguntas y descubre por qué rechaza lo que rechaza, qué nutrientes le pueden estar faltando y cuáles son los primeros alimentos que tiene más probabilidad de aceptar.</p>
+      <div class="eyebrow">${A.eyebrow}</div>
+      <h1>${A.h1}</h1>
+      <p class="sub">${A.sub}</p>
       <div class="preview">
         <div class="row"><span class="lbl">Hoy come</span><div class="chips">${chip("arroz")}${chip("papas")}${chip("pollo")}</div></div>
         <div class="row"><span class="lbl">En 4 semanas</span><div class="chips"><span class="chip new">🍠 Camote</span><span class="chip new">🥕 Zanahoria</span><span class="chip new">🫘 Frijol</span></div></div>
@@ -433,7 +454,7 @@ const SCREENS = [
         <span class="tag">${few?"Lo que pasa en realidad":"Un buen punto de partida"}</span>
         <h2>${few ? `No es capricho. Y no es tu culpa.` : `${N()} ya tiene una base. Ahora hay que ampliarla.`}</h2>
         ${few ? `
-        <p>Muchos niños en el espectro comen menos de 10 alimentos. Casi nunca es “mala conducta”: su sistema sensorial vive las <strong>texturas, colores y olores con mucha más intensidad</strong>.</p>
+        <p>Es más común de lo que parece: muchos niños, con o sin diagnóstico, pasan años comiendo casi lo mismo. Casi nunca es “mala conducta”: muchos viven las <strong>texturas, colores y olores con mucha más intensidad</strong> que los adultos.</p>
         <p>El problema es que, mientras tanto, la comida se vuelve una <strong>negociación diaria</strong>: cocinar dos veces, insistir, ceder, y terminar con el mismo plato de siempre.</p>
         <p>La buena noticia: si el problema es sensorial, la solución también puede serlo.</p>` : `
         <p>Que ${N()} acepte varios alimentos es una ventaja: cada uno es un <strong>punto de partida</strong> para llegar a opciones parecidas en textura, color y forma.</p>
@@ -584,8 +605,8 @@ const SCREENS = [
       </div>
     </section>`,
     mount: () => {
-      trackCustom("QuizCompleted", {count:S.count, foods:S.foods.length});
-      track("Lead");
+      trackCustom("QuizCompleted", {count:S.count, foods:S.foods.length, angle: ANGLE});
+      track("Lead", {content_category: ANGLE});
       let p=0; const arc=$("#arc"), pct=$("#pct"), rows=[...document.querySelectorAll("#steps div")];
       const t=setInterval(()=>{ p+=2; arc.style.strokeDashoffset = 314-314*p/100; pct.textContent=p+"%";
         rows.forEach((r,i)=>{ if(p>=(i+1)*24) r.classList.add("done"); });
@@ -778,7 +799,8 @@ function renderResult(){
     </div>
 
     <h3 style="font-size:22px;margin:28px 0 12px">Preguntas frecuentes</h3>
-    <details><summary>¿Es una dieta o un tratamiento para el autismo?</summary><p>No. mi mapa. es una herramienta para organizar la alimentación y ampliar el repertorio de tu hijo respetando sus preferencias sensoriales. No sustituye a su pediatra, nutriólogo ni terapeutas.</p></details>
+    <details><summary>¿Es una dieta?</summary><p>No. mi mapa. es una herramienta para organizar la alimentación y ampliar el repertorio de tu hijo respetando sus preferencias. No es un plan para bajar de peso ni un tratamiento médico, y no sustituye a su pediatra o nutriólogo.</p></details>
+    <details><summary>¿Sirve si mi hijo está en el espectro autista?</summary><p>Sí. El método parte de lo que tu hijo ya acepta y avanza por texturas, colores y formas parecidas, lo que respeta su perfil sensorial. Si tiene terapeutas, puedes compartir con ellos su mapa y su avance.</p></details>
     <details><summary>¿Y si mi hijo lo rechaza todo?</summary><p>Es normal al principio. Por eso cada paso es pequeño y siempre va junto a sus alimentos de siempre. Marcas lo que pasó y el plan propone el siguiente paso.</p></details>
     <details><summary>¿Necesito ingredientes caros o especiales?</summary><p>No. Las recetas usan ingredientes que encuentras en cualquier mercado, tianguis o súper.</p></details>
     <details><summary>¿Puedo cancelar cuando quiera?</summary><p>Sí. Sin plazos forzosos, y con ${CONFIG.guaranteeDays} días de garantía total.</p></details>
@@ -789,11 +811,12 @@ function renderResult(){
 }
 
 function buy(){
-  track("InitiateCheckout",{value:CONFIG.price,currency:"MXN"});
+  track("InitiateCheckout",{value:CONFIG.price,currency:"MXN",content_category:ANGLE});
   let url = CONFIG.checkoutUrl;
   try {
     const u = new URL(url);
     if (CONFIG.passUtms) new URLSearchParams(location.search).forEach((v,k)=>{ if(/^utm_|^src$|^sck$|^fbclid$/.test(k)) u.searchParams.set(k,v); });
+    if (!u.searchParams.get("sck")) u.searchParams.set("sck", "quiz_"+ANGLE);
     url = u.toString();
   } catch(e){}
   location.href = url;
@@ -812,9 +835,9 @@ function render(){
   sc.mount && sc.mount();
 }
 function next(){
-  if (step===0) trackCustom("QuizStarted");
+  if (step===0) trackCustom("QuizStarted", {angle: ANGLE});
   history.push(step); step=Math.min(step+1,SCREENS.length-1);
-  trackCustom("QuizStep", {step_number: step, step_name: STEP_NAMES[step] || String(step)});
+  trackCustom("QuizStep", {step_number: step, step_name: STEP_NAMES[step] || String(step), angle: ANGLE});
   render();
 }
 $("#back").onclick = () => { if(history.length){ step=history.pop(); render(); } };
